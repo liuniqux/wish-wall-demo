@@ -22,8 +22,7 @@ interface FloatingImageProps {
     swayOffset?: number;
 }
 
-const FloatingImage: React.FC<FloatingImageProps> = React.memo(
-    ({url, index, onDelete, onPreview}) => {
+const FloatingImage: React.FC<FloatingImageProps> = React.memo(({url, index, onDelete, onPreview}) => {
         const ref = useRef<THREE.Group>(null);
         const texture = useLoader(THREE.TextureLoader, url);
         const [dimensions, setDimensions] = useState<[number, number]>([2, 1]);
@@ -34,6 +33,9 @@ const FloatingImage: React.FC<FloatingImageProps> = React.memo(
         const heightUnits = 1.2;
 
         const [visible, setVisible] = useState(true);
+
+        // 这里生成随机相位偏移，只在组件挂载时生成一次
+        const phase = React.useMemo(() => Math.random() * Math.PI * 2, []);
 
         useEffect(() => {
             if (texture.image) {
@@ -58,31 +60,44 @@ const FloatingImage: React.FC<FloatingImageProps> = React.memo(
 
         const clippingPlane = new THREE.Plane(new THREE.Vector3(0, -1, 0), MAX_VISIBLE_Y);
 
-        useFrame((state, delta) => {
-            if (ref.current) {
-                if (!hovered) {
-                    ref.current.position.y -= delta * 0.1;
-                    if (ref.current.position.y < minY) {
-                        ref.current.position.y = maxY;
-                    }
+
+        const localTimeRef = useRef(0);
+        const currentAngleRef = useRef(0);
+
+        useFrame((_, delta) => {
+            if (!ref.current) return;
+
+            if (!hovered) {
+                // 未悬停时，位置下降 + 旋转摇晃
+                ref.current.position.y -= delta * 0.1;
+                if (ref.current.position.y < minY) {
+                    ref.current.position.y = maxY;
                 }
-
-                const y = ref.current.position.y;
-
-                const time = state.clock.getElapsedTime();
-
-                // 轻微绕X轴摇摆
-                ref.current.rotation.x = 0.05 * Math.cos(time * 2);
-
-                const fullyInsideWall = y + heightUnits / 2 + 0.1 <= maxY && y - heightUnits / 2 - 0.1 >= minY;
-                setVisible(fullyInsideWall);
+                localTimeRef.current += delta;
+                const angle = 0.05 * Math.cos(localTimeRef.current * 2 + phase);
+                currentAngleRef.current = angle;
+                ref.current.rotation.x = angle;
+            } else {
+                // 悬停时，保持当前位置和当前角度
+                // 位置不变，不做操作
+                ref.current.rotation.x = currentAngleRef.current;
             }
+
+            // 更新是否可见状态
+            const y = ref.current.position.y;
+            const fullyInsideWall = y + heightUnits / 2 + 0.1 <= maxY && y - heightUnits / 2 - 0.1 >= minY;
+            setVisible(fullyInsideWall);
         });
+
 
         const handleDownload = async (url: string) => {
             try {
                 const response = await fetch(url, {mode: 'cors'});
-                if (!response.ok) throw new Error('下载失败');
+                if (!response.ok) {
+                    console.error('下载失败，HTTP状态码:', response.status);
+                    alert('下载失败，请稍后再试');
+                    return;
+                }
                 const blob = await response.blob();
                 const blobUrl = window.URL.createObjectURL(blob);
                 const link = document.createElement('a');
@@ -164,10 +179,10 @@ const FloatingImage: React.FC<FloatingImageProps> = React.memo(
                             <FaDownload
                                 tabIndex={-1}
                                 onMouseDown={e => e.preventDefault()}
-                                onClick={e => {
+                                onClick={async (e) => {
                                     e.stopPropagation();
                                     setHoveredHtml(false);
-                                    handleDownload(url);
+                                    await handleDownload(url);
                                 }}
                                 style={{
                                     color: '#52c41a',
