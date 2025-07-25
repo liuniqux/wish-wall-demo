@@ -1,4 +1,3 @@
-// components/Ground.tsx
 import React from 'react';
 
 interface GroundProps {

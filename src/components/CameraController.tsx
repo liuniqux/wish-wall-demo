@@ -7,11 +7,12 @@ const SINGLE_WISH_LENGTH = 3;
 interface CameraControllerProps {
     velocity: THREE.Vector3;
     wishCount: number;
+    enabled: boolean;
 }
 
 const CORRIDOR_WIDTH = 6 - 0.5 / 2 - 0.1;
 
-const CameraController: React.FC<CameraControllerProps> = ({velocity, wishCount}) => {
+const CameraController: React.FC<CameraControllerProps> = ({velocity, wishCount, enabled}) => {
     const jumpSpeed = 8;
     const gravity = 20;
     const floorY = 0;
@@ -45,12 +46,14 @@ const CameraController: React.FC<CameraControllerProps> = ({velocity, wishCount}
 
         cam.position.z = Math.max(zMin, Math.min(zMax, cam.position.z));
 
-        vy.current -= gravity * delta;
-        cam.position.y += vy.current * delta;
-        if (cam.position.y <= floorY) {
-            cam.position.y = floorY;
-            vy.current = 0;
-            jumping.current = false;
+        if (enabled) {
+            vy.current -= gravity * delta;
+            cam.position.y += vy.current * delta;
+            if (cam.position.y <= floorY) {
+                cam.position.y = floorY;
+                vy.current = 0;
+                jumping.current = false;
+            }
         }
 
         cam.lookAt(cam.position.clone().add(rotatedDir));
