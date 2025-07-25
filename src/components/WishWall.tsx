@@ -217,7 +217,6 @@ const WishWall: React.FC = () => {
             ) : (
                 <UploadForm
                     onUpload={handleImageUpload}
-                    onStartDrop={() => setCameraDropEnabled(true)}
                     onLogout={handleLogout}
                 />
             )}
