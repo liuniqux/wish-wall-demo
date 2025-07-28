@@ -1,16 +1,22 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { FiSettings } from 'react-icons/fi'; // 添加图标
-import { useWallColor } from '../contexts/WallColorContext';
-import { useBackgroundSettings } from '../contexts/BackgroundContext';
+import React, {useState, useEffect, useRef} from 'react';
+import {FiSettings} from 'react-icons/fi';
+import {motion} from 'framer-motion';
+import {useWallColor} from '../contexts/WallColorContext';
+import {useBackgroundSettings} from '../contexts/BackgroundContext';
 
 const SceneSettingsPanel: React.FC = () => {
-    const { colorHex, setColorHex } = useWallColor();
-    const { backgroundColor, setBackgroundColor, backgroundStyle, setBackgroundStyle } = useBackgroundSettings();
+    const {colorHex, setColorHex} = useWallColor();
+    const {backgroundColor, setBackgroundColor, backgroundStyle, setBackgroundStyle} = useBackgroundSettings();
 
     const [open, setOpen] = useState(false);
-    const panelRef = useRef<HTMLDivElement>(null);
+    const [direction, setDirection] = useState<'top' | 'bottom' | 'right' | 'left'>('bottom');
 
-    // 点击外部区域自动收起面板
+    const panelRef = useRef<HTMLDivElement>(null);
+    const buttonRef = useRef<HTMLButtonElement>(null);
+    const constraintsRef = useRef<HTMLDivElement>(null);
+    const dragStartPos = useRef<{ x: number; y: number } | null>(null);
+
+    // 监听点击外部，自动关闭面板
     useEffect(() => {
         const handleClickOutside = (e: MouseEvent) => {
             if (panelRef.current && !panelRef.current.contains(e.target as Node)) {
@@ -18,10 +24,87 @@ const SceneSettingsPanel: React.FC = () => {
             }
         };
         document.addEventListener('mousedown', handleClickOutside);
-        return () => {
-            document.removeEventListener('mousedown', handleClickOutside);
-        };
+        return () => document.removeEventListener('mousedown', handleClickOutside);
     }, []);
+
+    // 判断面板显示方向
+    const updatePanelDirection = () => {
+        if (!buttonRef.current) return;
+        const rect = buttonRef.current.getBoundingClientRect();
+        const margin = 80;
+        const windowWidth = window.innerWidth;
+        const windowHeight = window.innerHeight;
+
+        if (rect.bottom + margin > windowHeight) {
+            setDirection('top');
+        } else if (rect.top < margin) {
+            setDirection('bottom');
+        } else if (rect.left < margin) {
+            setDirection('right');
+        } else if (rect.right + margin > windowWidth) {
+            setDirection('left');
+        } else {
+            setDirection('bottom');
+        }
+    };
+
+    const getAnimationVariants = (direction: 'top' | 'bottom' | 'left' | 'right') => {
+        switch (direction) {
+            case 'top':
+                return {
+                    initial: { opacity: 0, y: 10 },
+                    animate: { opacity: 1, y: 0 },
+                    exit: { opacity: 0, y: 10 },
+                };
+            case 'bottom':
+                return {
+                    initial: { opacity: 0, y: -10 },
+                    animate: { opacity: 1, y: 0 },
+                    exit: { opacity: 0, y: -10 },
+                };
+            case 'left':
+                return {
+                    initial: { opacity: 0, x: 10 },
+                    animate: { opacity: 1, x: 0 },
+                    exit: { opacity: 0, x: 10 },
+                };
+            case 'right':
+                return {
+                    initial: { opacity: 0, x: -10 },
+                    animate: { opacity: 1, x: 0 },
+                    exit: { opacity: 0, x: -10 },
+                };
+            default:
+                return {
+                    initial: { opacity: 0, y: 10 },
+                    animate: { opacity: 1, y: 0 },
+                    exit: { opacity: 0, y: 10 },
+                };
+        }
+    };
+
+    const variants = getAnimationVariants(direction);
+
+
+    // 鼠标按下记录拖动起点
+    const handleMouseDown = (e: React.MouseEvent) => {
+        dragStartPos.current = {x: e.clientX, y: e.clientY};
+    };
+
+    // 鼠标抬起判断是否是点击还是拖动
+    const handleMouseUp = (e: React.MouseEvent) => {
+        if (!dragStartPos.current) return;
+        const dx = e.clientX - dragStartPos.current.x;
+        const dy = e.clientY - dragStartPos.current.y;
+        const distance = Math.sqrt(dx * dx + dy * dy);
+        dragStartPos.current = null;
+
+        // 如果不是拖动，就切换打开状态，并更新方向
+        if (distance < 2) {
+            updatePanelDirection();
+            setOpen((prev) => !prev);
+        }
+    };
 
     const iconStyle: React.CSSProperties = {
         width: 24,
@@ -36,167 +119,102 @@ const SceneSettingsPanel: React.FC = () => {
     };
 
     return (
-        <div
-            style={{
-                position: 'absolute',
-                top: 20,
-                right: 20,
-                zIndex: 100,
-                display: 'flex',
-                flexDirection: 'column',
-                alignItems: 'flex-end',
-                gap: 8,
-                fontFamily: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif",
-                userSelect: 'none',
-            }}
-            ref={panelRef}
-        >
-            {/* 主按钮 */}
-            <button
-                onClick={() => setOpen(!open)}
-                aria-label="设置"
-                title="设置"
-                style={{
-                    width: 44,
-                    height: 44,
-                    borderRadius: '50%',
-                    background: open
-                        ? 'rgba(255, 255, 255, 0.15)'
-                        : 'rgba(255, 255, 255, 0.1)',
-                    border: '1.5px solid rgba(255, 255, 255, 0.3)',
-                    backdropFilter: 'blur(12px)',
-                    cursor: 'pointer',
-                    display: 'flex',
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                    padding: 0,
-                    lineHeight: 1,
-                    boxShadow: open ? '0 0 12px rgba(255,255,255,0.3)' : 'none',
-                    transition: 'all 0.3s ease',
-                    outline: 'none',
-                }}
-            >
-                <FiSettings
-                    size={20}
-                    style={{
-                        transition: 'transform 0.3s ease, color 0.3s ease',
-                        transform: open ? 'rotate(90deg)' : 'rotate(0deg)',
-                        color: open ? '#61dafb' : '#ffffff',
-                    }}
-                />
-            </button>
-
-            {/* 设置面板 */}
+        <>
+            {/* 拖拽约束区域 */}
             <div
-                style={{
-                    marginTop: 8,
-                    background: 'rgba(30, 30, 40, 0.85)',
-                    padding: '14px 18px',
-                    borderRadius: 12,
-                    width: 160,
-                    color: 'white',
-                    fontSize: 14,
-                    boxShadow: '0 8px 20px rgba(0,0,0,0.6)',
-                    display: open ? 'flex' : 'none',
-                    flexDirection: 'column',
-                    gap: 16,
-                    userSelect: 'none',
-                    transition: 'opacity 0.3s ease',
-                }}
+                ref={constraintsRef}
+                className="fixed top-0 left-0 w-screen h-screen pointer-events-none z-[999]"
+            />
+
+            <motion.div
+                drag={!open}
+                dragConstraints={constraintsRef}
+                dragElastic={0.2}
+                dragMomentum={false}
+                ref={panelRef}
+                className={`fixed top-5 right-5 z-[100] flex flex-col items-end gap-2 font-sans select-none ${
+                    open ? 'cursor-default' : 'cursor-grab'
+                }`}
             >
+                {/* 设置按钮 */}
+                <button
+                    ref={buttonRef}
+                    onMouseDown={handleMouseDown}
+                    onMouseUp={handleMouseUp}
+                    aria-label="设置"
+                    title="设置"
+                    className={`w-11 h-11 rounded-full border backdrop-blur-md flex justify-center items-center p-0 leading-none transition-all duration-300 outline-none focus:outline-none focus:ring-0 
+                        ${open ? 'bg-white/15 border-blue-400 shadow-[0_0_12px_rgba(255,255,255,0.3)]' : 'bg-white/10 border-white/30'}`}
+                    style={{cursor: 'pointer'}}
+                >
+                    <FiSettings
+                        size={20}
+                        className={`transition-transform duration-300 ${
+                            open ? 'rotate-90 text-[#61dafb]' : 'rotate-0 text-white'
+                        }`}
+                    />
+                </button>
+
+                {/* 设置面板 */}
+                <motion.div
+                    initial={variants.initial}
+                    animate={open ? variants.animate : variants.exit}
+                    transition={{ duration: 0.25, ease: 'easeOut' }}
+                    style={{ pointerEvents: open ? 'auto' : 'none' }}
+                    className={`absolute ${
+                        direction === 'top'
+                            ? 'bottom-14 right-0'
+                            : direction === 'left'
+                                ? 'right-14 top-0'
+                                : direction === 'right'
+                                    ? 'left-14 top-0'
+                                    : 'top-14 right-0'
+                    } bg-[#1e1e28d9] p-4 rounded-lg w-40 text-white text-sm shadow-[0_8px_20px_rgba(0,0,0,0.6)] flex flex-col gap-4 select-none cursor-default`}
+                >
+
                 {/* 墙面颜色 */}
-                <label
-                    title="墙面颜色"
-                    style={{
-                        display: 'flex',
-                        alignItems: 'center',
-                        gap: 8,
-                        cursor: 'pointer',
-                        maxWidth: 'fit-content'
-                    }}
-                >
-                    <span role="img" aria-label="wall" style={iconStyle}>🧱</span>
-                    <input
-                        type="color"
-                        value={colorHex}
-                        onChange={(e) => setColorHex(e.target.value)}
-                        style={{
-                            width: 36,
-                            height: 36,
-                            border: 'none',
-                            background: 'transparent',
-                            cursor: 'pointer',
-                            borderRadius: 6,
-                            boxShadow: '0 0 5px rgba(0,0,0,0.3)',
-                            padding: 0,
-                        }}
-                    />
-                </label>
+                    <label title="墙面颜色" className="flex items-center gap-2 cursor-pointer max-w-max">
+                        <span role="img" aria-label="wall" style={iconStyle}>🧱</span>
+                        <input
+                            type="color"
+                            value={colorHex}
+                            onChange={(e) => setColorHex(e.target.value)}
+                            className="w-9 h-9 bg-transparent border-none rounded-md shadow-sm p-0 cursor-pointer"
+                            style={{boxShadow: '0 0 5px rgba(0,0,0,0.3)'}}
+                        />
+                    </label>
 
-                {/* 背景颜色 */}
-                <label
-                    title="背景颜色"
-                    style={{
-                        display: 'flex',
-                        alignItems: 'center',
-                        gap: 8,
-                        cursor: 'pointer',
-                        maxWidth: 'fit-content'
-                    }}
-                >
-                    <span role="img" aria-label="background" style={iconStyle}>🌌</span>
-                    <input
-                        type="color"
-                        value={backgroundColor}
-                        onChange={(e) => setBackgroundColor(e.target.value)}
-                        style={{
-                            width: 36,
-                            height: 36,
-                            border: 'none',
-                            background: 'transparent',
-                            cursor: 'pointer',
-                            borderRadius: 6,
-                            boxShadow: '0 0 5px rgba(0,0,0,0.3)',
-                            padding: 0,
-                        }}
-                    />
-                </label>
+                    {/* 背景颜色 */}
+                    <label title="背景颜色" className="flex items-center gap-2 cursor-pointer max-w-max">
+                        <span role="img" aria-label="background" style={iconStyle}>🌌</span>
+                        <input
+                            type="color"
+                            value={backgroundColor}
+                            onChange={(e) => setBackgroundColor(e.target.value)}
+                            className="w-9 h-9 bg-transparent border-none rounded-md shadow-sm p-0 cursor-pointer"
+                            style={{boxShadow: '0 0 5px rgba(0,0,0,0.3)'}}
+                        />
+                    </label>
 
-                {/* 背景样式 */}
-                <label
-                    title="背景样式"
-                    style={{
-                        display: 'flex',
-                        alignItems: 'center',
-                        gap: 8,
-                        cursor: 'pointer',
-                    }}
-                >
-                    <span role="img" aria-label="style" style={iconStyle}>🎨</span>
-                    <select
-                        value={backgroundStyle}
-                        onChange={(e) =>
-                            setBackgroundStyle(e.target.value as 'none' | 'stars' | 'gradient' | 'grid')
-                        }
-                        style={{
-                            padding: '6px 10px',
-                            borderRadius: 8,
-                            background: '#2a2a38',
-                            color: 'white',
-                            border: '1px solid #444',
-                            cursor: 'pointer',
-                            fontSize: 14,
-                            flexGrow: 1,
-                        }}
-                    >
-                        <option value="none">无</option>
-                        <option value="stars">星空</option>
-                        <option value="gradient">渐变</option>
-                        <option value="grid">网格</option>
-                    </select>
-                </label>
-            </div>
-        </div>
+                    {/* 背景样式 */}
+                    <label title="背景样式" className="flex items-center gap-2 cursor-pointer">
+                        <span role="img" aria-label="style" style={iconStyle}>🎨</span>
+                        <select
+                            value={backgroundStyle}
+                            onChange={(e) =>
+                                setBackgroundStyle(e.target.value as 'none' | 'stars' | 'gradient' | 'grid')
+                            }
+                            className="flex-grow px-2 py-1 rounded-lg bg-[#2a2a38] text-white border border-gray-600 cursor-pointer text-sm"
+                        >
+                            <option value="none">无</option>
+                            <option value="stars">星空</option>
+                            <option value="gradient">渐变</option>
+                            <option value="grid">网格</option>
+                        </select>
+                    </label>
+                </motion.div>
+            </motion.div>
+        </>
     );
 };
 

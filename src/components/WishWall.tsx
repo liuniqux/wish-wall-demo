@@ -16,6 +16,7 @@ import type {FormMode} from '../types';
 import WallColorProvider from "../providers/WallColorProvider.tsx";
 import BackgroundProvider from '../providers/BackgroundProvider.tsx';
 import SceneSettingsPanel from "./SceneSettingsPanel.tsx";
+import LogoutButton from "./LogoutButton.tsx";
 
 const STEP_HEIGHT = 1;
 const STEP_COUNT = 20;
@@ -218,17 +219,17 @@ const WishWall: React.FC = () => {
                     onVisitorLogin={handleVisitorLogin}
                 />
             ) : (
-                <UploadForm
-                    onUpload={handleImageUpload}
-                    onLogout={handleLogout}
-                />
+                <>
+                    <UploadForm onUpload={handleImageUpload}/>
+                    <LogoutButton onLogout={handleLogout}/>
+                </>
             )}
 
             <BackgroundProvider>
                 <WallColorProvider>
                     <div style={{width: '100vw', height: '100vh'}}>
                         {/* 自定义工具集 */}
-                        <SceneSettingsPanel />
+                        <SceneSettingsPanel/>
 
                         <Canvas
                             camera={{position: [0, cameraStartY, cameraStartZ], fov: 75}}
