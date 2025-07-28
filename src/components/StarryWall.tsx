@@ -1,8 +1,8 @@
-// components/StarryWall.tsx
 import React, { useRef } from 'react';
 import { extend, useFrame } from '@react-three/fiber';
 import { shaderMaterial } from '@react-three/drei';
 import * as THREE from 'three';
+import { useWallColor } from '../contexts/WallColorContext.ts'; // ⬅️ 读取 context
 
 // ⭐ 自定义 Shader Material
 const StarfieldMaterial = shaderMaterial(
@@ -10,8 +10,9 @@ const StarfieldMaterial = shaderMaterial(
         time: 0,
         direction: new THREE.Vector2(1.0, 0.0), // 默认从左往右
         offset: Math.random() * 100,
+        baseColor: new THREE.Color(0x202040), // 初始底色
     },
-    // Vertex Shader
+    // 顶点着色器
     `
     varying vec2 vUv;
     void main() {
@@ -19,12 +20,13 @@ const StarfieldMaterial = shaderMaterial(
       gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
     }
   `,
-    // Fragment Shader
+    // 片元着色器
     `
     precision highp float;
     uniform float time;
     uniform vec2 direction;
     uniform float offset;
+    uniform vec3 baseColor;
     varying vec2 vUv;
 
     float rand(vec2 co) {
@@ -41,15 +43,14 @@ const StarfieldMaterial = shaderMaterial(
 
     void main() {
       float brightness = 0.0;
-
-      // 多个流星参数（可调）
       brightness += meteor(vUv, vec2(0.2, 0.3), 0.4, 0.005, 6.0);
       brightness += meteor(vUv, vec2(0.5, 0.7), 0.3, 0.004, 8.0);
       brightness += meteor(vUv, vec2(0.7, 0.5), 0.6, 0.006, 10.0);
       brightness += meteor(vUv, vec2(0.3, 0.8), 0.5, 0.004, 7.0);
       brightness += meteor(vUv, vec2(0.9, 0.2), 0.45, 0.005, 9.0);
 
-      gl_FragColor = vec4(vec3(brightness), brightness);
+      vec3 color = baseColor + vec3(brightness);  // 底色+流星光
+      gl_FragColor = vec4(color, 1.0);
     }
   `
 );
@@ -60,14 +61,18 @@ extend({ StarfieldMaterial });
 const StarryWall: React.FC<{ height: number }> = ({ height }) => {
     const leftRef = useRef<THREE.ShaderMaterial>(null);
     const rightRef = useRef<THREE.ShaderMaterial>(null);
+    const { colorHex } = useWallColor(); // ⬅️ 使用颜色上下文
+    const baseColor = new THREE.Color(colorHex);
 
     useFrame(({ clock }) => {
         const t = clock.getElapsedTime();
         if (leftRef.current) {
             leftRef.current.uniforms.time.value = t;
+            leftRef.current.uniforms.baseColor.value = baseColor;
         }
         if (rightRef.current) {
             rightRef.current.uniforms.time.value = t;
+            rightRef.current.uniforms.baseColor.value = baseColor;
         }
     });
 

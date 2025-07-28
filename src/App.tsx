@@ -3,7 +3,7 @@ import WishWall from './components/WishWall.tsx';
 
 const App: React.FC = () => (
     <div className="w-full h-screen">
-        <WishWall />
+        <WishWall/>
     </div>
 );
 

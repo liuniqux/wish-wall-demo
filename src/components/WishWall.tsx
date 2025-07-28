@@ -13,6 +13,9 @@ import PreviewModal from './PreviewModal.tsx';
 import AuthForm from './AuthForm.tsx';
 import UploadForm from './UploadForm.tsx';
 import type {FormMode} from '../types';
+import WallColorProvider from "../providers/WallColorProvider.tsx";
+import BackgroundProvider from '../providers/BackgroundProvider.tsx';
+import SceneSettingsPanel from "./SceneSettingsPanel.tsx";
 
 const STEP_HEIGHT = 1;
 const STEP_COUNT = 20;
@@ -221,49 +224,58 @@ const WishWall: React.FC = () => {
                 />
             )}
 
-            <Canvas
-                camera={{position: [0, cameraStartY, cameraStartZ], fov: 75}}
-                style={{backgroundColor: 'black'}}
-                gl={{localClippingEnabled: true}}
-            >
-                <Stars radius={100} depth={50} count={2000} factor={4} saturation={0} fade/>
-                <ambientLight intensity={0.4}/>
-                <directionalLight position={[5, 10, 5]} intensity={1} castShadow/>
-                <Ground groundLength={groundLength}/>
-                <StarryWall height={wallLength}/>
-                <Suspense fallback={null}>
-                    {imageList.map((url, index) => (
-                        <FloatingImage
-                            key={url}
-                            url={url}
-                            index={index}
-                            onDelete={handleDelete}
-                            onPreview={handlePreview}
-                        />
-                    ))}
-                </Suspense>
-                <Suspense fallback={null}>
-                    {newImages.map((url, index) => (
-                        <FloatingImage
-                            key={url}
-                            url={url}
-                            index={imageList.length + index}
-                            onDelete={handleDelete}
-                            onPreview={handlePreview}
-                        />
-                    ))}
-                </Suspense>
-                <CameraController
-                    velocity={velocity}
-                    wishCount={imageList.length + newImages.length}
-                    enabled={cameraDropEnabled}
-                />
-                <CameraResetter enabled={!isLoggedIn}/>
-                <OrbitControls enablePan={false} enableZoom={false}/>
-            </Canvas>
+            <BackgroundProvider>
+                <WallColorProvider>
+                    <div style={{width: '100vw', height: '100vh'}}>
+                        {/* 自定义工具集 */}
+                        <SceneSettingsPanel />
+
+                        <Canvas
+                            camera={{position: [0, cameraStartY, cameraStartZ], fov: 75}}
+                            style={{backgroundColor: 'black'}}
+                            gl={{localClippingEnabled: true}}
+                        >
+                            <Stars radius={100} depth={50} count={2000} factor={4} saturation={0} fade/>
+                            <ambientLight intensity={0.4}/>
+                            <directionalLight position={[5, 10, 5]} intensity={1} castShadow/>
+                            <Ground groundLength={groundLength}/>
+                            <StarryWall height={wallLength}/>
+                            <Suspense fallback={null}>
+                                {imageList.map((url, index) => (
+                                    <FloatingImage
+                                        key={url}
+                                        url={url}
+                                        index={index}
+                                        onDelete={handleDelete}
+                                        onPreview={handlePreview}
+                                    />
+                                ))}
+                            </Suspense>
+                            <Suspense fallback={null}>
+                                {newImages.map((url, index) => (
+                                    <FloatingImage
+                                        key={url}
+                                        url={url}
+                                        index={imageList.length + index}
+                                        onDelete={handleDelete}
+                                        onPreview={handlePreview}
+                                    />
+                                ))}
+                            </Suspense>
+                            <CameraController
+                                velocity={velocity}
+                                wishCount={imageList.length + newImages.length}
+                                enabled={cameraDropEnabled}
+                            />
+                            <CameraResetter enabled={!isLoggedIn}/>
+                            <OrbitControls enablePan={false} enableZoom={false}/>
+                        </Canvas>
+                    </div>
+                </WallColorProvider>
+            </BackgroundProvider>
 
             {previewUrl && (
-                <PreviewModal image={previewUrl} onClose={() => setPreviewUrl(null)} />
+                <PreviewModal image={previewUrl} onClose={() => setPreviewUrl(null)}/>
             )}
         </div>
     );
