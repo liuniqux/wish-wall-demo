@@ -1,54 +1,78 @@
-import React from 'react';
+import { motion, AnimatePresence } from "framer-motion";
+import { useEffect, useState } from "react";
+import CloseButton from "./CloseButton.tsx";
 
-const PreviewModal: React.FC<{
-    visible: boolean;
-    imageUrl: string;
+interface PreviewModalProps {
+    image: string | null;
     onClose: () => void;
-}> = ({ visible, imageUrl, onClose }) => {
-    if (!visible) return null;
+}
+
+export default function PreviewModal({ image, onClose }: PreviewModalProps) {
+    const [visible, setVisible] = useState(false);
+
+    // 当 image 变化时设置显示状态
+    useEffect(() => {
+        if (image) {
+            setVisible(true);
+        }
+    }, [image]);
+
+    // 按 Esc 关闭
+    useEffect(() => {
+        const handleKeyDown = (e: KeyboardEvent) => {
+            if (e.key === "Escape") {
+                setVisible(false);
+            }
+        };
+
+        if (image) {
+            window.addEventListener("keydown", handleKeyDown);
+        }
+        return () => {
+            window.removeEventListener("keydown", handleKeyDown);
+        };
+    }, [image]);
+
+    // 动画退出后真正触发 onClose
+    const handleExitComplete = () => {
+        if (!visible) {
+            onClose();
+        }
+    };
+
+    // 点击关闭按钮
+    const handleClose = () => {
+        setVisible(false);
+    };
 
     return (
-        <div
-            className="modal-overlay"
-            style={{
-                position: 'fixed',
-                top: 0, left: 0, right: 0, bottom: 0,
-                backgroundColor: 'rgba(0,0,0,0.7)',
-                display: 'flex',
-                justifyContent: 'center',
-                alignItems: 'center',
-                zIndex: 9999,
-            }}
-            onClick={onClose}
-        >
-            <img
-                src={imageUrl}
-                alt="预览"
-                style={{
-                    maxWidth: '80vw',
-                    maxHeight: '80vh',
-                    boxShadow: '0 0 20px rgba(255,255,255,0.8)',
-                    borderRadius: '8px',
-                }}
-            />
-            <button
-                onClick={(e) => {
-                    e.stopPropagation();
-                    onClose();
-                }}
-                style={{
-                    position: 'absolute',
-                    top: 20,
-                    right: 20,
-                    padding: '8px 12px',
-                    fontSize: '16px',
-                    cursor: 'pointer',
-                }}
-            >
-                关闭
-            </button>
-        </div>
-    );
-};
+        <AnimatePresence onExitComplete={handleExitComplete}>
+            {image && visible && (
+                <motion.div
+                    className="fixed inset-0 z-50 bg-black/80 flex items-center justify-center backdrop-blur-sm"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                >
+                    <motion.div
+                        className="relative max-w-4xl w-full max-h-[90vh] p-2"
+                        initial={{ scale: 0.9, opacity: 0 }}
+                        animate={{ scale: 1, opacity: 1 }}
+                        exit={{ scale: 0.9, opacity: 0 }}
+                        transition={{ duration: 0.3, ease: "easeInOut" }}
+                    >
+                        {/* 关闭按钮 */}
+                        <CloseButton onClose={handleClose} />
 
-export default PreviewModal;
+                        {/* 图片预览 */}
+                        <img
+                            src={image}
+                            alt="Preview"
+                            className="w-full h-auto max-h-[80vh] object-contain rounded-xl shadow-2xl"
+                        />
+                    </motion.div>
+                </motion.div>
+            )}
+        </AnimatePresence>
+    );
+}

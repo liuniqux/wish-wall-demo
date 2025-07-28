@@ -263,11 +263,7 @@ const WishWall: React.FC = () => {
             </Canvas>
 
             {previewUrl && (
-                <PreviewModal
-                    visible={!!previewUrl}
-                    imageUrl={previewUrl}
-                    onClose={() => setPreviewUrl(null)}
-                />
+                <PreviewModal image={previewUrl} onClose={() => setPreviewUrl(null)} />
             )}
         </div>
     );
