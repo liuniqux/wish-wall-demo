@@ -1,7 +1,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 
-import type {FormMode} from '../types';
+import type {FormMode} from '../../types.tsx';
 
 interface AuthFormProps {
     formMode: FormMode;

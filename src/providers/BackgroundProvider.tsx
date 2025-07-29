@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import { BackgroundContext } from '../contexts/BackgroundContext';
+import { BackgroundContext } from '../contexts/BackgroundContext.tsx';
+import type {BackgroundStyle} from "../types.tsx";
 
-type BackgroundStyle = 'none' | 'stars' | 'gradient' | 'grid';
 
 const BackgroundProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
     const [backgroundColor, setBackgroundColor] = useState('#000000');

@@ -1,6 +1,5 @@
 import { createContext, useContext } from 'react';
-
-type BackgroundStyle = 'none' | 'stars' | 'gradient' | 'grid';
+import type {BackgroundStyle} from "../types.tsx";
 
 interface BackgroundSettingsContext {
     backgroundColor: string;

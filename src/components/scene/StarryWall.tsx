@@ -2,7 +2,7 @@ import React, { useRef } from 'react';
 import { extend, useFrame } from '@react-three/fiber';
 import { shaderMaterial } from '@react-three/drei';
 import * as THREE from 'three';
-import { useWallColor } from '../contexts/WallColorContext.ts'; // ⬅️ 读取 context
+import {useBackgroundColor} from "../../contexts/BackgroundColorContext.tsx"; // ⬅️ 读取 context
 
 // ⭐ 自定义 Shader Material
 const StarfieldMaterial = shaderMaterial(
@@ -61,7 +61,7 @@ extend({ StarfieldMaterial });
 const StarryWall: React.FC<{ height: number }> = ({ height }) => {
     const leftRef = useRef<THREE.ShaderMaterial>(null);
     const rightRef = useRef<THREE.ShaderMaterial>(null);
-    const { colorHex } = useWallColor(); // ⬅️ 使用颜色上下文
+    const { colorHex } = useBackgroundColor(); // ⬅️ 使用颜色上下文
     const baseColor = new THREE.Color(colorHex);
 
     useFrame(({ clock }) => {
