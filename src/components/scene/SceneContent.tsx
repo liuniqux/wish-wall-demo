@@ -1,6 +1,6 @@
 import React, {Suspense} from 'react';
 import {Canvas} from '@react-three/fiber';
-import {OrbitControls, Stars} from '@react-three/drei';
+import {Stars} from '@react-three/drei';
 import * as THREE from 'three';
 
 import FloatingImage from './FloatingImage.tsx';
@@ -81,7 +81,6 @@ const SceneContent: React.FC<{
                     enabled={cameraDropEnabled}
                 />
                 <CameraResetter enabled={!isLoggedIn}/>
-                <OrbitControls enablePan={false} enableZoom={false}/>
             </Canvas>
         </div>
     );
