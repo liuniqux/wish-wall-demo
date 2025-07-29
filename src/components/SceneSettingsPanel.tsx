@@ -28,64 +28,75 @@ const SceneSettingsPanel: React.FC = () => {
         return () => document.removeEventListener('mousedown', handleClickOutside);
     }, []);
 
+    // 监听窗口大小调整，更新方向
+    useEffect(() => {
+        const updateDirection = () => {
+            const newDirection = getPanelDirection();
+            setDirection(newDirection);
+        };
+
+        window.addEventListener('resize', updateDirection);
+        return () => window.removeEventListener('resize', updateDirection);
+    }, []);
+
     // 判断面板显示方向
-    const updatePanelDirection = () => {
-        if (!buttonRef.current) return;
+    const getPanelDirection = (): Direction => {
+        if (!buttonRef.current) return 'bottom';
         const rect = buttonRef.current.getBoundingClientRect();
         const margin = 80;
         const windowWidth = window.innerWidth;
         const windowHeight = window.innerHeight;
 
         if (rect.bottom + margin > windowHeight) {
-            setDirection('top');
+            return 'top';
         } else if (rect.top < margin) {
-            setDirection('bottom');
+            return 'bottom';
         } else if (rect.left < margin) {
-            setDirection('right');
+            return 'right';
         } else if (rect.right + margin > windowWidth) {
-            setDirection('left');
+            return 'left';
         } else {
-            setDirection('bottom');
+            return 'bottom';
         }
     };
+
 
     const getAnimationVariants = (direction: Direction) => {
         switch (direction) {
             case 'top':
                 return {
-                    initial: { opacity: 0, y: 10 },
-                    animate: { opacity: 1, y: 0 },
-                    exit: { opacity: 0, y: 10 },
+                    initial: {opacity: 0, y: 10},
+                    animate: {opacity: 1, y: 0},
+                    exit: {opacity: 0, y: 10},
                 };
             case 'bottom':
                 return {
-                    initial: { opacity: 0, y: -10 },
-                    animate: { opacity: 1, y: 0 },
-                    exit: { opacity: 0, y: -10 },
+                    initial: {opacity: 0, y: -10},
+                    animate: {opacity: 1, y: 0},
+                    exit: {opacity: 0, y: -10},
                 };
             case 'left':
                 return {
-                    initial: { opacity: 0, x: 10 },
-                    animate: { opacity: 1, x: 0 },
-                    exit: { opacity: 0, x: 10 },
+                    initial: {opacity: 0, x: 10},
+                    animate: {opacity: 1, x: 0},
+                    exit: {opacity: 0, x: 10},
                 };
             case 'right':
                 return {
-                    initial: { opacity: 0, x: -10 },
-                    animate: { opacity: 1, x: 0 },
-                    exit: { opacity: 0, x: -10 },
+                    initial: {opacity: 0, x: -10},
+                    animate: {opacity: 1, x: 0},
+                    exit: {opacity: 0, x: -10},
                 };
             default:
                 return {
-                    initial: { opacity: 0, y: 10 },
-                    animate: { opacity: 1, y: 0 },
-                    exit: { opacity: 0, y: 10 },
+                    initial: {opacity: 0, y: 10},
+                    animate: {opacity: 1, y: 0},
+                    exit: {opacity: 0, y: 10},
                 };
         }
     };
 
     const variants = getAnimationVariants(direction);
-
 
     // 鼠标按下记录拖动起点
     const handleMouseDown = (e: React.MouseEvent) => {
@@ -100,11 +111,17 @@ const SceneSettingsPanel: React.FC = () => {
         const distance = Math.sqrt(dx * dx + dy * dy);
         dragStartPos.current = null;
 
-        // 如果不是拖动，就切换打开状态，并更新方向
         if (distance < 2) {
-            updatePanelDirection();
+            const newDirection = getPanelDirection();
+            setDirection(newDirection);
             setOpen((prev) => !prev);
         }
+    };
+
+    // 拖拽结束时更新方向
+    const handleDragEnd = () => {
+        const newDirection = getPanelDirection();
+        setDirection(newDirection);
     };
 
     const iconStyle: React.CSSProperties = {
@@ -132,6 +149,7 @@ const SceneSettingsPanel: React.FC = () => {
                 dragConstraints={constraintsRef}
                 dragElastic={0.2}
                 dragMomentum={false}
+                onDragEnd={handleDragEnd}
                 ref={panelRef}
                 className={`fixed top-5 right-5 z-[100] flex flex-col items-end gap-2 font-sans select-none ${
                     open ? 'cursor-default' : 'cursor-grab'
@@ -160,8 +178,8 @@ const SceneSettingsPanel: React.FC = () => {
                 <motion.div
                     initial={variants.initial}
                     animate={open ? variants.animate : variants.exit}
-                    transition={{ duration: 0.25, ease: 'easeOut' }}
-                    style={{ pointerEvents: open ? 'auto' : 'none' }}
+                    transition={{duration: 0.25, ease: 'easeOut'}}
+                    style={{pointerEvents: open ? 'auto' : 'none'}}
                     className={`absolute ${
                         direction === 'top'
                             ? 'bottom-14 right-0'
@@ -173,7 +191,7 @@ const SceneSettingsPanel: React.FC = () => {
                     } bg-[#1e1e28d9] p-4 rounded-lg w-40 text-white text-sm shadow-[0_8px_20px_rgba(0,0,0,0.6)] flex flex-col gap-4 select-none cursor-default`}
                 >
 
-                {/* 墙面颜色 */}
+                    {/* 墙面颜色 */}
                     <label title="墙面颜色" className="flex items-center gap-2 cursor-pointer max-w-max">
                         <span role="img" aria-label="wall" style={iconStyle}>🧱</span>
                         <input
