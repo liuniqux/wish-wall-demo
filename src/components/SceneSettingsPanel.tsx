@@ -60,7 +60,6 @@ const SceneSettingsPanel: React.FC = () => {
         }
     };
 
-
     const getAnimationVariants = (direction: Direction) => {
         switch (direction) {
             case 'top':
@@ -162,15 +161,16 @@ const SceneSettingsPanel: React.FC = () => {
                     onMouseUp={handleMouseUp}
                     aria-label="设置"
                     title="设置"
-                    className={`w-11 h-11 rounded-full border backdrop-blur-md flex justify-center items-center p-0 leading-none transition-all duration-300 outline-none focus:outline-none focus:ring-0 
-                        ${open ? 'bg-white/15 border-blue-400 shadow-[0_0_12px_rgba(255,255,255,0.3)]' : 'bg-white/10 border-white/30'}`}
+                    className={`group w-11 h-11 rounded-full border backdrop-blur-md flex justify-center items-center p-0 leading-none transition-all duration-300 outline-none focus:outline-none focus:ring-0 
+                        ${open ? 'bg-white/15 border-blue-400 shadow-[0_0_12px_rgba(255,255,255,0.3)]' : 'bg-white/10 border-white/30'}
+                        hover:bg-white/20 hover:border-blue-200`}
                     style={{cursor: 'pointer'}}
                 >
                     <FiSettings
                         size={20}
-                        className={`transition-transform duration-300 ${
-                            open ? 'rotate-90 text-[#61dafb]' : 'rotate-0 text-white'
-                        }`}
+                        className={`transition-all duration-300 ${
+                            open ? 'rotate-90 text-[#61dafb]' : 'rotate-0 text-white/30'
+                        } group-hover:text-blue-200`}
                     />
                 </button>
 
