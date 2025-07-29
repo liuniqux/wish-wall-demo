@@ -3,13 +3,14 @@ import {FiSettings} from 'react-icons/fi';
 import {motion} from 'framer-motion';
 import {useWallColor} from '../contexts/WallColorContext';
 import {useBackgroundSettings} from '../contexts/BackgroundContext';
+import type {Direction} from "../types.ts";
 
 const SceneSettingsPanel: React.FC = () => {
     const {colorHex, setColorHex} = useWallColor();
     const {backgroundColor, setBackgroundColor, backgroundStyle, setBackgroundStyle} = useBackgroundSettings();
 
     const [open, setOpen] = useState(false);
-    const [direction, setDirection] = useState<'top' | 'bottom' | 'right' | 'left'>('bottom');
+    const [direction, setDirection] = useState<Direction>('bottom');
 
     const panelRef = useRef<HTMLDivElement>(null);
     const buttonRef = useRef<HTMLButtonElement>(null);
@@ -48,7 +49,7 @@ const SceneSettingsPanel: React.FC = () => {
         }
     };
 
-    const getAnimationVariants = (direction: 'top' | 'bottom' | 'left' | 'right') => {
+    const getAnimationVariants = (direction: Direction) => {
         switch (direction) {
             case 'top':
                 return {
