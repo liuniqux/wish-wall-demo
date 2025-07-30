@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {FiSettings, FiLogOut, FiUpload, FiX} from 'react-icons/fi';
 import {AnimatePresence, motion} from 'framer-motion';
 import {usePanelDrag} from '../../hooks/usePanelDrag';
@@ -24,6 +24,11 @@ const SceneSettingsPanel: React.FC<SceneSettingsPanelProps> = ({onLogout, onUplo
         handleDragEnd
     } = usePanelDrag();
     const [activeModal, setActiveModal] = useState<'style' | 'personal' | 'upload' | null>(null);
+
+    // 调试：确认模态窗口状态
+    useEffect(() => {
+        console.log('Active modal:', activeModal);
+    }, [activeModal]);
 
     const variants = getAnimationVariants(direction);
 
@@ -66,7 +71,7 @@ const SceneSettingsPanel: React.FC<SceneSettingsPanelProps> = ({onLogout, onUplo
                                 direction === 'top' ? 'bottom-14 right-0' :
                                     direction === 'left' ? 'right-14 top-0' :
                                         direction === 'right' ? 'left-14 top-0' : 'top-14 right-0'
-                            } bg-[#1e1e28d9] p-4 rounded-lg w-40 text-black text-sm shadow-[0_8px_20px_rgba(0,0,0,0.6)] flex flex-col gap-2 select-none cursor-default`}
+                            } bg-[#1e1e28d9] p-4 rounded-lg w-40 text-white text-sm shadow-[0_8px_20px_rgba(0,0,0,0.6)] flex flex-col gap-2 select-none cursor-default`}
                         >
                             <button
                                 onClick={() => setActiveModal('style')}
@@ -110,20 +115,21 @@ const SceneSettingsPanel: React.FC<SceneSettingsPanelProps> = ({onLogout, onUplo
                         initial={variants.initial}
                         animate={variants.animate}
                         exit={variants.exit}
-                        transition={{duration: 0.25, ease: 'easeOut'}}
+                        transition={{duration: 0.3, ease: 'easeOut'}}
                         className={`absolute z-[20] ${
                             direction === 'top' ? 'bottom-14 right-0' :
                                 direction === 'left' ? 'right-14 top-0' :
                                     direction === 'right' ? 'left-14 top-0' : 'top-14 right-0'
-                        } bg-[#1e1e28d9] p-4 rounded-lg w-64 text-white text-sm shadow-[0_8px_20px_rgba(0,0,0,0.6)] flex flex-col gap-4 select-none cursor-default`}
+                        } bg-gradient-to-br from-[#1e1e28] to-[#2a2a38] p-6 rounded-2xl w-96 text-white text-sm shadow-[0_8px_24px_rgba(0,0,0,0.8)] flex flex-col gap-4 select-none cursor-default border border-white/10`}
                     >
                         <button
                             onClick={() => setActiveModal(null)}
-                            className="absolute top-2 right-2 text-white/50 hover:text-white"
+                            className="absolute top-3 right-3 text-white/50 hover:text-white transition"
                             aria-label="关闭"
                         >
-                            <FiX size={16}/>
+                            <FiX size={18}/>
                         </button>
+                        <h3 className="text-white font-semibold text-base">上传图片</h3>
                         <UploadForm onUpload={(e) => {
                             onUpload(e);
                             setActiveModal(null);
