@@ -6,6 +6,7 @@ import StyleSettingsModal from './setting/StyleSettingsModal.tsx';
 import PersonalInfoModal from './setting/PersonalInfoModal.tsx';
 import UploadForm from '../ui/UploadForm.tsx';
 import {getAnimationVariants} from "../../utils/animation.tsx";
+import type {ActiveModel} from "../../types.tsx";
 
 interface SceneSettingsPanelProps {
     onLogout: () => void;
@@ -15,6 +16,7 @@ interface SceneSettingsPanelProps {
 const SceneSettingsPanel: React.FC<SceneSettingsPanelProps> = ({onLogout, onUpload}) => {
     const {
         open,
+        setOpen,
         direction,
         panelRef,
         buttonRef,
@@ -23,7 +25,7 @@ const SceneSettingsPanel: React.FC<SceneSettingsPanelProps> = ({onLogout, onUplo
         handleMouseUp,
         handleDragEnd
     } = usePanelDrag();
-    const [activeModal, setActiveModal] = useState<'style' | 'personal' | 'upload' | null>(null);
+    const [activeModal, setActiveModal] = useState<ActiveModel>(null);
 
     // 调试：确认模态窗口状态
     useEffect(() => {
@@ -31,6 +33,11 @@ const SceneSettingsPanel: React.FC<SceneSettingsPanelProps> = ({onLogout, onUplo
     }, [activeModal]);
 
     const variants = getAnimationVariants(direction);
+
+    const handleMenuClick = (modal: ActiveModel) => {
+        setActiveModal(modal);
+        setOpen(false);  // 关闭设置弹框
+    };
 
     return (
         <>
@@ -74,19 +81,19 @@ const SceneSettingsPanel: React.FC<SceneSettingsPanelProps> = ({onLogout, onUplo
                             } bg-[#1e1e28d9] p-4 rounded-lg w-40 text-white text-sm shadow-[0_8px_20px_rgba(0,0,0,0.6)] flex flex-col gap-2 select-none cursor-default`}
                         >
                             <button
-                                onClick={() => setActiveModal('style')}
+                                onClick={() => handleMenuClick('style')}
                                 className="px-2 py-1 rounded hover:bg-white/10 text-left text-white"
                             >
                                 样式
                             </button>
                             <button
-                                onClick={() => setActiveModal('personal')}
+                                onClick={() => handleMenuClick('personal')}
                                 className="px-2 py-1 rounded hover:bg-white/10 text-left text-white"
                             >
                                 个人信息
                             </button>
                             <button
-                                onClick={() => setActiveModal('upload')}
+                                onClick={() => handleMenuClick('upload')}
                                 className="px-2 py-1 rounded hover:bg-blue-500/20 text-left text-white flex items-center gap-2"
                             >
                                 <FiUpload size={16} color="#3b82f6"/>
