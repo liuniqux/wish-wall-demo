@@ -2,7 +2,7 @@ import React, { useRef } from 'react';
 import { extend, useFrame } from '@react-three/fiber';
 import { shaderMaterial } from '@react-three/drei';
 import * as THREE from 'three';
-import {useBackgroundColor} from "../../contexts/BackgroundColorContext.tsx"; // ⬅️ 读取 context
+import {useBackgroundColor} from "../../contexts/BackgroundColorContext.tsx";
 
 // ⭐ 自定义 Shader Material
 const StarfieldMaterial = shaderMaterial(

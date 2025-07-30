@@ -8,7 +8,6 @@ import Ground from './Ground.tsx';
 import CameraController from './CameraController.tsx';
 import StarryWall from './StarryWall.tsx';
 
-import SceneSettingsPanel from "../ui/SceneSettingsPanel.tsx";
 import CameraResetter from "./CameraResetter.tsx";
 import {useBackgroundColor} from "../../contexts/BackgroundColorContext.tsx";
 
@@ -42,7 +41,6 @@ const SceneContent: React.FC<{
 
     return (
         <div style={{width: '100vw', height: '100vh'}}>
-            <SceneSettingsPanel/>
             <Canvas
                 camera={{position: [0, cameraStartY, cameraStartZ], fov: 75}}
                 style={{backgroundColor: starryBackgroundColor}}

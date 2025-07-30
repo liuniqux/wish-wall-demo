@@ -1,12 +1,11 @@
 import React from 'react';
-import BackgroundProvider from '../providers/BackgroundProvider';
-import {useWishWall} from '../hooks/useWishWall';
+import { useWishWall } from '../hooks/useWishWall';
 import AuthForm from "./auth/AuthForm.tsx";
-import UploadForm from "./ui/UploadForm.tsx";
-import LogoutButton from "./auth/LogoutButton.tsx";
 import SceneContent from "./scene/SceneContent.tsx";
 import PreviewModal from "./ui/PreviewModal.tsx";
 import BackgroundColorProvider from "../providers/BackgroundColorProvider.tsx";
+import BackgroundStyleProvider from "../providers/BackgroundStyleProvider.tsx";
+import SceneSettingsPanel from "./ui/SceneSettingsPanel.tsx";
 
 const WishWall: React.FC = () => {
     const {
@@ -53,13 +52,13 @@ const WishWall: React.FC = () => {
                     onVisitorLogin={handleVisitorLogin}
                 />
             ) : (
-                <>
-                    <UploadForm onUpload={handleImageUpload}/>
-                    <LogoutButton onLogout={handleLogout}/>
-                </>
+                <SceneSettingsPanel
+                    onLogout={handleLogout}
+                    onUpload={handleImageUpload}
+                />
             )}
 
-            <BackgroundProvider>
+            <BackgroundStyleProvider>
                 <BackgroundColorProvider>
                     <SceneContent
                         imageList={imageList}
@@ -73,9 +72,9 @@ const WishWall: React.FC = () => {
                         isLoggedIn={isLoggedIn}
                     />
                 </BackgroundColorProvider>
-            </BackgroundProvider>
+            </BackgroundStyleProvider>
 
-            {previewUrl && <PreviewModal image={previewUrl} onClose={() => setPreviewUrl(null)}/>}
+            {previewUrl && <PreviewModal image={previewUrl} onClose={() => setPreviewUrl(null)} />}
         </div>
     );
 };
