@@ -1,8 +1,8 @@
 import React, {useEffect, useRef, useState} from 'react';
 import {FiAlertCircle, FiEye, FiMove, FiTrash2, FiUpload, FiX} from 'react-icons/fi';
-import PreviewModal from '../PreviewModal.tsx';
-import {getCenterModalVariants} from "../../../utils/animation.tsx";
-import CenteredModal from "../common/CenteredModal.tsx";
+import PreviewModal from '@/components/ui/modals/PreviewModal.tsx';
+import {getCenterModalVariants} from "@/utils/animation.tsx";
+import CenteredModal from "@/components/ui/modals/CenteredModal.tsx";
 
 // 上传表单组件 Props，提供关闭与上传回调
 interface UploadFormProps {
@@ -10,7 +10,7 @@ interface UploadFormProps {
     onUpload: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
-const UploadForm: React.FC<UploadFormProps> = ({onUpload, onClose}) => {
+const UploadModal: React.FC<UploadFormProps> = ({onUpload, onClose}) => {
     // 当前已选择的文件列表
     const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
 
@@ -267,4 +267,4 @@ const UploadForm: React.FC<UploadFormProps> = ({onUpload, onClose}) => {
     );
 };
 
-export default UploadForm;
+export default UploadModal;

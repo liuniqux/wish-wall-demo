@@ -8,18 +8,18 @@ import {FiSettings, FiLogOut, FiUpload} from 'react-icons/fi';
 import {AnimatePresence, motion} from 'framer-motion';
 
 // 引入自定义拖动逻辑 Hook
-import {usePanelDrag} from '../../hooks/usePanelDrag';
+import {usePanelDrag} from '@/hooks/usePanelDrag';
 
 // 引入弹窗组件：样式设置、个人信息、上传表单
-import StyleSettingsModal from './setting/StyleSettingsModal.tsx';
-import PersonalInfoModal from './setting/PersonalInfoModal.tsx';
-import UploadForm from './setting/UploadForm.tsx';
+import StyleSettingsModal from '@/components/ui/modals/StyleSettingsModal';
+import PersonalInfoModal from '@/components/ui/modals/PersonalInfoModal';
+import UploadModal from '@/components/ui/modals/UploadModal.tsx';
 
 // 动画工具函数：根据方向生成不同的进入/退出动画
-import {getAnimationVariants} from "../../utils/animation.tsx";
+import {getAnimationVariants} from "@/utils/animation.tsx";
 
 // 引入定义好的类型
-import type {ActiveModel} from "../../types.tsx";
+import type {ActiveModel} from "@/types";
 
 // Props 类型定义，传入登出函数和上传回调
 interface SceneSettingsPanelProps {
@@ -168,7 +168,7 @@ const SceneSettingsPanel: React.FC<SceneSettingsPanelProps> = ({onLogout, onUplo
                     <PersonalInfoModal onClose={() => setActiveModal(null)}/>
                 )}
                 {activeModal === 'upload' && (
-                    <UploadForm
+                    <UploadModal
                         onUpload={(e) => {
                             onUpload(e);
                         }}

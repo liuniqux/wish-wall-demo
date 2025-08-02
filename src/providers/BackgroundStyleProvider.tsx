@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { BackgroundStyleContext } from '../contexts/BackgroundStyleContext.tsx';
-import type {BackgroundStyle} from "../types.tsx";
+import { BackgroundStyleContext } from '@/contexts/BackgroundStyleContext.tsx';
+import type {BackgroundStyle} from "@/types";
 
 
 const BackgroundStyleProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {

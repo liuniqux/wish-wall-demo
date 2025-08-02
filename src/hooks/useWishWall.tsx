@@ -1,8 +1,8 @@
 import * as THREE from 'three';
 import {useRef, useState} from 'react';
-import {useAuth} from './useAuth';
-import {useImageListWithBuffer} from './useImageListWithBuffer';
-import {useWallAndCamera} from './useWallAndCamera';
+import {useAuth} from '@/hooks/useAuth';
+import {useImageListWithBuffer} from '@/hooks/useImageListWithBuffer';
+import {useWallAndCamera} from '@/hooks/useWallAndCamera';
 
 export const useWishWall = () => {
     const velocity = useRef(new THREE.Vector3());

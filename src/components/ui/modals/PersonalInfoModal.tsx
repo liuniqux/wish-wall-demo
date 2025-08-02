@@ -4,7 +4,7 @@ import React from 'react';
 import {FiX} from 'react-icons/fi';
 
 // 引入通用弹窗容器组件
-import CenteredModal from '../common/CenteredModal.tsx';
+import CenteredModal from '@/components/ui/modals/CenteredModal.tsx';
 
 /**
  * PersonalInfoModalProps 定义了弹窗组件所需的 props 类型

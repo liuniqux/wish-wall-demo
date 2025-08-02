@@ -1,6 +1,6 @@
 import {createContext, useContext} from 'react';
 // 引入类型定义 BackgroundStyle，用于指定背景样式的类型
-import type {BackgroundStyle} from "../types.tsx";
+import type {BackgroundStyle} from "@/types";
 
 // 定义背景样式上下文接口，包含当前样式及修改函数
 interface BackgroundStyleContext {

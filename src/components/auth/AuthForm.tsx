@@ -1,7 +1,7 @@
 import React from 'react';
 import {motion} from 'framer-motion';
 
-import type {FormMode} from '../../types.tsx';
+import type {FormMode} from '@/types';
 
 interface AuthFormProps {
     // 当前表单模式：登录、注册或游客登录

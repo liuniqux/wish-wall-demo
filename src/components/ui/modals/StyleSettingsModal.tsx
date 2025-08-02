@@ -1,10 +1,10 @@
 import React from 'react';
 import {FiX} from 'react-icons/fi';
-import type {BackgroundStyle} from '../../../types.tsx';
-import {useBackgroundColor} from '../../../contexts/BackgroundColorContext.tsx';
-import {useBackgroundStyle} from '../../../contexts/BackgroundStyleContext.tsx';
-import {getCenterModalVariants} from '../../../utils/animation.tsx';
-import CenteredModal from "../common/CenteredModal.tsx";
+import type {BackgroundStyle} from '@/types';
+import {useBackgroundColor} from '@/contexts/BackgroundColorContext.tsx';
+import {useBackgroundStyle} from '@/contexts/BackgroundStyleContext.tsx';
+import {getCenterModalVariants} from '@/utils/animation.tsx';
+import CenteredModal from "./CenteredModal.tsx";
 
 interface StyleSettingsModalProps {
     onClose: () => void;

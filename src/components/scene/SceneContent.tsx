@@ -3,13 +3,13 @@ import {Canvas} from '@react-three/fiber';
 import {Stars} from '@react-three/drei';
 import * as THREE from 'three';
 
-import FloatingImage from './FloatingImage.tsx';
-import Ground from './Ground.tsx';
-import CameraController from './CameraController.tsx';
-import StarryWall from './StarryWall.tsx';
-import CameraResetter from './CameraResetter.tsx';
-import {useBackgroundColor} from '../../contexts/BackgroundColorContext.tsx';
-import SceneSettingsPanel from '../ui/SceneSettingsPanel.tsx';
+import FloatingImage from '@/components/scene/FloatingImage.tsx';
+import Ground from '@/components/scene/Ground.tsx';
+import CameraController from '@/components/scene/CameraController.tsx';
+import StarryWall from '@/components/scene/StarryWall.tsx';
+import CameraResetter from '@/components/scene/CameraResetter.tsx';
+import {useBackgroundColor} from '@/contexts/BackgroundColorContext.tsx';
+import SceneSettingsPanel from '@/components/ui/SceneSettingsPanel.tsx';
 
 /**
  * 相机初始位置设置

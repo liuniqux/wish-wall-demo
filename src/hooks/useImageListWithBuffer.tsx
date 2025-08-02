@@ -1,6 +1,6 @@
 import { useState, useMemo, useEffect, useCallback } from 'react';
 import debounce from 'lodash/debounce';
-import { resizeImage } from '../utils/image.tsx';
+import { resizeImage } from '@/utils/image.tsx';
 
 interface UseImageListWithBufferReturn {
     imageList: string[];

@@ -1,22 +1,22 @@
 import React, {useEffect} from "react";
 
 // 引入自定义 Hook，封装了登录状态、表单数据、图片列表及事件处理等逻辑
-import {useWishWall} from '../hooks/useWishWall';
+import {useWishWall} from '@/hooks/useWishWall.tsx';
 
 // 登录 / 注册 / 游客模式表单组件
-import AuthForm from './auth/AuthForm.tsx';
+import AuthForm from '@/components/auth/AuthForm.tsx';
 
 // 三维场景核心组件，展示图片墙和地面
-import SceneContent from './scene/SceneContent.tsx';
+import SceneContent from '@/components/scene/SceneContent.tsx';
 
 // 图片预览弹窗组件，支持点击放大查看
-import PreviewModal from './ui/PreviewModal.tsx';
+import PreviewModal from '@/components/ui/modals/PreviewModal.tsx';
 
 // 背景颜色状态提供器，用于在全局范围内控制背景渐变色
-import BackgroundColorProvider from '../providers/BackgroundColorProvider.tsx';
+import BackgroundColorProvider from '@/providers/BackgroundColorProvider.tsx';
 
 // 背景风格状态提供器，用于管理背景类型（如星空、线条、网格等）
-import BackgroundStyleProvider from '../providers/BackgroundStyleProvider.tsx';
+import BackgroundStyleProvider from '@/providers/BackgroundStyleProvider.tsx';
 
 const WishWall: React.FC = () => {
     // 从 useWishWall 中解构出所有用于状态管理和交互处理的变量及函数

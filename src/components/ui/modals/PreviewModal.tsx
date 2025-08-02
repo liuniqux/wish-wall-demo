@@ -1,6 +1,6 @@
 import {motion, AnimatePresence} from "framer-motion";
 import {useEffect, useState} from "react";
-import CloseButton from "./CloseButton.tsx";
+import CloseButton from "@/components/ui/CloseButton.tsx";
 
 interface PreviewModalProps {
     // 要预览的图片 URL，如果为 null 表示不显示

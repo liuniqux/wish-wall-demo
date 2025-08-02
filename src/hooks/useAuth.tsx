@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import type { FormMode } from '../types';
+import type { FormMode } from '@/types';
 
 interface UseAuthProps {
     onLoginChange?: (loggedIn: boolean) => void; // 外部传入的登录状态变化回调

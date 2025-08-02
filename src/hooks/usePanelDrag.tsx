@@ -1,5 +1,5 @@
 import {useEffect, useRef, useState} from 'react';
-import type {Direction} from '../types';
+import type {Direction} from '@/types';
 
 // 自定义 Hook，管理一个可拖拽面板的打开状态、位置方向及拖拽相关事件
 export const usePanelDrag = () => {

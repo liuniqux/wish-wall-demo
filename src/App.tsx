@@ -1,5 +1,5 @@
 import React from 'react';
-import WishWall from './components/WishWall.tsx';
+import WishWall from './pages/WishWall.tsx';
 
 const App: React.FC = () => (
     <div className="w-full h-screen">

@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import { BackgroundColorContext } from '../contexts/BackgroundColorContext';
+import { BackgroundColorContext } from '@/contexts/BackgroundColorContext';
 
 
 const BackgroundColorProvider: React.FC<{ children: React.ReactNode }> = ({children}) => {

@@ -2,7 +2,7 @@ import React, {useRef} from 'react';
 import {extend, useFrame} from '@react-three/fiber';
 import {shaderMaterial} from '@react-three/drei';
 import * as THREE from 'three';
-import {useBackgroundColor} from '../../contexts/BackgroundColorContext.tsx';
+import {useBackgroundColor} from '@/contexts/BackgroundColorContext.tsx';
 
 /**
  * ⭐ 自定义 ShaderMaterial：用于生成流星划过的动态星空墙面。

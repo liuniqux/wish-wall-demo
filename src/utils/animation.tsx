@@ -1,4 +1,4 @@
-import type {Direction} from '../types';
+import type {Direction} from '@/types';
 import type {TargetAndTransition} from 'framer-motion';
 
 type Variants = {
