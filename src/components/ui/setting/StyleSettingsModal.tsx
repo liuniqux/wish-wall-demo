@@ -1,22 +1,29 @@
 import React from 'react';
-import { motion } from 'framer-motion';
-import type { BackgroundStyle, Direction } from '../../../types.tsx';
-import { FiX } from 'react-icons/fi';
-import {useBackgroundColor} from "../../../contexts/BackgroundColorContext.tsx";
-import {useBackgroundStyle} from "../../../contexts/BackgroundStyleContext.tsx";
-import {getAnimationVariants} from "../../../utils/animation.tsx";
+import {FiX} from 'react-icons/fi';
+import type {BackgroundStyle} from '../../../types.tsx';
+import {useBackgroundColor} from '../../../contexts/BackgroundColorContext.tsx';
+import {useBackgroundStyle} from '../../../contexts/BackgroundStyleContext.tsx';
+import {getCenterModalVariants} from '../../../utils/animation.tsx';
+import CenteredModal from "../common/CenteredModal.tsx";
 
 interface StyleSettingsModalProps {
     onClose: () => void;
-    direction: Direction;
+
+    // 控制是否显示遮罩层的可选参数，默认为 false
+    withBackdrop?: boolean;
 }
 
-const StyleSettingsModal: React.FC<StyleSettingsModalProps> = ({ onClose, direction }) => {
-    const { starryBackgroundColor, setStarryBackgroundColor, colorHex, setColorHex } = useBackgroundColor();
-    const { backgroundStyle, setBackgroundStyle } = useBackgroundStyle();
+const StyleSettingsModal: React.FC<StyleSettingsModalProps> = ({
+                                                                   onClose,
+                                                                   withBackdrop = false,
+                                                               }) => {
+    // 取出颜色相关状态和修改方法（墙面颜色、星空背景色）
+    const {starryBackgroundColor, setStarryBackgroundColor, colorHex, setColorHex} = useBackgroundColor();
 
-    const variants = getAnimationVariants(direction);
+    // 取出背景样式的当前值和修改函数（none、stars、gradient、grid）
+    const {backgroundStyle, setBackgroundStyle} = useBackgroundStyle();
 
+    // 图标的统一样式定义
     const iconStyle: React.CSSProperties = {
         width: 24,
         height: 24,
@@ -30,24 +37,25 @@ const StyleSettingsModal: React.FC<StyleSettingsModalProps> = ({ onClose, direct
     };
 
     return (
-        <motion.div
-            initial={variants.initial}
-            animate={variants.animate}
-            exit={variants.exit}
-            transition={{ duration: 0.25, ease: 'easeOut' }}
-            className={`absolute  z-[20] ${
-                direction === 'top' ? 'bottom-14 right-0' :
-                    direction === 'left' ? 'right-14 top-0' :
-                        direction === 'right' ? 'left-14 top-0' : 'top-14 right-0'
-            } bg-[#1e1e28d9] p-4 rounded-lg w-40 text-white text-sm shadow-[0_8px_20px_rgba(0,0,0,0.6)] flex flex-col gap-4 select-none cursor-default`}
+        <CenteredModal
+            // 弹出动画配置
+            animationVariants={getCenterModalVariants()}
+            // 弹框内容宽度与布局
+            className="w-60 flex flex-col gap-4 text-sm"
+            // 是否显示遮罩层
+            showBackdrop={withBackdrop}
         >
+            {/* 关闭按钮，位于右上角 */}
             <button
                 onClick={onClose}
                 className="absolute top-2 right-2 text-white/50 hover:text-white"
                 aria-label="关闭"
+                type="button"
             >
-                <FiX size={16} />
+                <FiX size={18}/>
             </button>
+
+            {/* 设置墙面颜色 */}
             <label title="墙面颜色" className="flex items-center gap-2 cursor-pointer max-w-max">
                 <span role="img" aria-label="wall" style={iconStyle}>🧱</span>
                 <input
@@ -55,9 +63,11 @@ const StyleSettingsModal: React.FC<StyleSettingsModalProps> = ({ onClose, direct
                     value={colorHex}
                     onChange={(e) => setColorHex(e.target.value)}
                     className="w-9 h-9 bg-transparent border-none rounded-md shadow-sm p-0 cursor-pointer"
-                    style={{ boxShadow: '0 0 5px rgba(0,0,0,0.3)' }}
+                    style={{boxShadow: '0 0 5px rgba(0,0,0,0.3)'}}
                 />
             </label>
+
+            {/* 设置星空背景颜色 */}
             <label title="星空背景颜色" className="flex items-center gap-2 cursor-pointer max-w-max">
                 <span role="img" aria-label="starry background" style={iconStyle}>🌌</span>
                 <input
@@ -65,9 +75,11 @@ const StyleSettingsModal: React.FC<StyleSettingsModalProps> = ({ onClose, direct
                     value={starryBackgroundColor}
                     onChange={(e) => setStarryBackgroundColor(e.target.value)}
                     className="w-9 h-9 bg-transparent border-none rounded-md shadow-sm p-0 cursor-pointer"
-                    style={{ boxShadow: '0 0 5px rgba(0,0,0,0.3)' }}
+                    style={{boxShadow: '0 0 5px rgba(0,0,0,0.3)'}}
                 />
             </label>
+
+            {/* 设置背景样式类型 */}
             <label title="背景样式" className="flex items-center gap-2 cursor-pointer">
                 <span role="img" aria-label="style" style={iconStyle}>🎨</span>
                 <select
@@ -81,7 +93,7 @@ const StyleSettingsModal: React.FC<StyleSettingsModalProps> = ({ onClose, direct
                     <option value="grid">网格</option>
                 </select>
             </label>
-        </motion.div>
+        </CenteredModal>
     );
 };
 

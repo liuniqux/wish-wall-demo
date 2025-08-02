@@ -1,7 +1,7 @@
-import { useEffect, useMemo, useState } from 'react';
+import {useEffect, useMemo, useState, useRef} from 'react';
 import * as THREE from 'three';
 import debounce from 'lodash/debounce';
-import type { FormMode } from '../types';
+import type {FormMode} from '../types';
 
 // 定义 useWishWall 的返回值类型
 interface WishWallState {
@@ -37,7 +37,7 @@ export const useWishWall = (): WishWallState => {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState<string | null>(null);
-    const velocity = useState(() => new THREE.Vector3())[0];
+    const velocity = useRef(new THREE.Vector3());
     const [imageList, setImageList] = useState<string[]>([]);
     const [newImages, setNewImages] = useState<string[]>([]);
     const [previewUrl, setPreviewUrl] = useState<string | null>(null);
@@ -117,13 +117,6 @@ export const useWishWall = (): WishWallState => {
         setGroundLength(initialImages.length * 3 + 20);
     }, []);
 
-    useEffect(() => {
-        return () => {
-            imageList.forEach((url) => URL.revokeObjectURL(url));
-            newImages.forEach((url) => URL.revokeObjectURL(url));
-        };
-    }, [imageList, newImages]);
-
     const handleLogin = () => {
         if (username === 'user' && password === '123456') {
             setError(null);
@@ -171,7 +164,7 @@ export const useWishWall = (): WishWallState => {
         setPassword,
         error,
         setError,
-        velocity,
+        velocity: velocity.current,
         imageList,
         newImages,
         previewUrl,
@@ -197,7 +190,7 @@ const resizeImage = (file: File, maxSize: number): Promise<string> => {
             img.src = e.target?.result as string;
             img.onload = () => {
                 const canvas = document.createElement('canvas');
-                let { width, height } = img;
+                let {width, height} = img;
                 if (width > height && width > maxSize) {
                     height = (maxSize / width) * height;
                     width = maxSize;
