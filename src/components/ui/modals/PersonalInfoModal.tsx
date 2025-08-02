@@ -5,6 +5,7 @@ import {FiX} from 'react-icons/fi';
 
 // 引入通用弹窗容器组件
 import CenteredModal from '@/components/ui/modals/CenteredModal.tsx';
+import {getCenterModalVariants} from "@/utils/animation.tsx";
 
 /**
  * PersonalInfoModalProps 定义了弹窗组件所需的 props 类型
@@ -21,7 +22,8 @@ interface PersonalInfoModalProps {
 const PersonalInfoModal: React.FC<PersonalInfoModalProps> = ({onClose}) => {
     return (
         // 使用 CenteredModal 包裹内容，实现统一样式和居中布局
-        <CenteredModal className="w-80 max-w-full flex flex-col gap-4 text-sm">
+        <CenteredModal className="w-80 max-w-full flex flex-col gap-4 text-sm"
+                       animationVariants={getCenterModalVariants()}>
 
             {/* 关闭按钮，位于右上角，点击后调用 onClose 回调关闭弹窗 */}
             <button
