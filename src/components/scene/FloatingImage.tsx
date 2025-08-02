@@ -117,10 +117,9 @@ const FloatingImage: React.FC<FloatingImageProps> = React.memo(({url, index, onD
             ref.current.rotation.x = currentAngleRef.current;
         }
 
-        // 判断是否完全位于墙面可见范围内，用于控制操作按钮显隐
-        const y = ref.current.position.y;
+        const yPos = ref.current.position.y;
         const fullyInsideWall =
-            y + heightUnits / 2 + 0.1 <= maxY && y - heightUnits / 2 - 0.1 >= minY;
+            yPos + heightUnits / 2 + 0.1 <= maxY && yPos - heightUnits / 2 - 0.1 >= minY;
         setVisible(fullyInsideWall);
     });
 
@@ -183,21 +182,17 @@ const FloatingImage: React.FC<FloatingImageProps> = React.memo(({url, index, onD
                         onMouseEnter={() => setHoveredHtml(true)}
                         onMouseLeave={() => setHoveredHtml(false)}
                         onMouseDown={e => e.preventDefault()}
-                        style={{
-                            display: 'flex',
-                            gap: '12px',
-                            background: 'rgba(0, 0, 0, 0.65)',
-                            padding: '6px 12px',
-                            borderRadius: '8px',
-                            transform: 'translate(-50%, -50%)',
-                            position: 'absolute',
-                            top: '50%',
-                            left: '50%',
-                            zIndex: 1,
-                            userSelect: 'none',
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                        }}
+                        className="
+                                    absolute top-1/2 left-1/2
+                                    flex gap-3
+                                    bg-black bg-opacity-60
+                                    px-3 py-1.5
+                                    rounded-lg
+                                    -translate-x-1/2 -translate-y-1/2
+                                    z-10
+                                    select-none
+                                    items-center justify-center
+                                  "
                     >
                         <FaSearchPlus
                             tabIndex={-1}
@@ -207,12 +202,13 @@ const FloatingImage: React.FC<FloatingImageProps> = React.memo(({url, index, onD
                                 setHoveredHtml(false);
                                 onPreview?.(url);
                             }}
-                            style={{
-                                color: '#1890ff',
-                                cursor: 'pointer',
-                                fontSize: '18px',
-                                userSelect: 'none',
-                            }}
+                            className="
+                                        text-blue-500
+                                        cursor-pointer
+                                        text-xl
+                                        select-none
+                                        hover:text-blue-400
+                                      "
                             title="放大"
                         />
                         <FaDownload
@@ -223,12 +219,13 @@ const FloatingImage: React.FC<FloatingImageProps> = React.memo(({url, index, onD
                                 setHoveredHtml(false);
                                 await handleDownload(url);
                             }}
-                            style={{
-                                color: '#52c41a',
-                                cursor: 'pointer',
-                                fontSize: '18px',
-                                userSelect: 'none',
-                            }}
+                            className="
+                                        text-green-500
+                                        cursor-pointer
+                                        text-xl
+                                        select-none
+                                        hover:text-green-400
+                                      "
                             title="下载"
                         />
                         <FaTrash
@@ -239,12 +236,13 @@ const FloatingImage: React.FC<FloatingImageProps> = React.memo(({url, index, onD
                                 setHoveredHtml(false);
                                 onDelete(url);
                             }}
-                            style={{
-                                color: '#ff4d4f',
-                                cursor: 'pointer',
-                                fontSize: '18px',
-                                userSelect: 'none',
-                            }}
+                            className="
+                                        text-red-500
+                                        cursor-pointer
+                                        text-xl
+                                        select-none
+                                        hover:text-red-400
+                                      "
                             title="删除"
                         />
                     </div>

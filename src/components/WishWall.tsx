@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect} from "react";
 
 // 引入自定义 Hook，封装了登录状态、表单数据、图片列表及事件处理等逻辑
 import {useWishWall} from '../hooks/useWishWall';
@@ -59,6 +59,8 @@ const WishWall: React.FC = () => {
         // 摄像机是否允许自动下落（用于展示动画）
         cameraDropEnabled,
 
+        // 初始图片
+        setInitialImages,
         // 上传图片处理函数
         handleImageUpload,
         // 删除图片处理函数
@@ -74,6 +76,13 @@ const WishWall: React.FC = () => {
         // 登出处理函数
         handleLogout
     } = useWishWall();
+
+    useEffect(() => {
+        const initialImages = [
+            'https://linux.do/uploads/default/original/2X/b/bc9d1a2b4219f9c23dde4bc39fe3fbd8f6a4b13d.jpeg',
+        ];
+        setInitialImages(initialImages);
+    }, [setInitialImages]);
 
     return (
         <div className="w-screen h-screen">

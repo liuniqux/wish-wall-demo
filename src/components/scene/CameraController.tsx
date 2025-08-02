@@ -9,9 +9,12 @@ const SINGLE_WISH_LENGTH = 3;
 const CORRIDOR_WIDTH = 6 - 0.5 / 2 - 0.1;
 
 interface CameraControllerProps {
-    velocity: THREE.Vector3;     // 摄像机在Z轴上的移动速度，由外部控制
-    wishCount: number;           // 当前墙上显示的愿望数量，用于计算最远可前进距离
-    enabled: boolean;            // 是否启用跳跃和重力行为
+    // 摄像机在Z轴上的移动速度，由外部控制
+    velocity: THREE.Vector3;
+    // 当前墙上显示的愿望数量，用于计算最远可前进距离
+    wishCount: number;
+    // 是否启用跳跃和重力行为
+    enabled: boolean;
 }
 
 /**
