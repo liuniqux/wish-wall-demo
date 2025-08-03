@@ -43,8 +43,10 @@ const StarfieldMaterial = shaderMaterial(
     float meteor(vec2 uv, vec2 origin, float speed, float size, float tail) {
       vec2 pos = origin + direction * mod(time * speed + offset, 1.5);
       vec2 diff = uv - pos;
-      float core = smoothstep(size, 0.0, length(diff));       // 流星头部
-      float trail = exp(-dot(diff, direction) * tail);        // 尾部拖影
+      // 流星头部
+      float core = smoothstep(size, 0.0, length(diff));
+      // 尾部拖影
+      float trail = exp(-dot(diff, direction) * tail);
       return core * trail;
     }
 
@@ -57,7 +59,8 @@ const StarfieldMaterial = shaderMaterial(
       brightness += meteor(vUv, vec2(0.3, 0.8), 0.5, 0.004, 7.0);
       brightness += meteor(vUv, vec2(0.9, 0.2), 0.45, 0.005, 9.0);
 
-      vec3 color = baseColor + vec3(brightness); // 叠加亮度到底色
+      // 叠加亮度到底色
+      vec3 color = baseColor + vec3(brightness);
       gl_FragColor = vec4(color, 1.0);
     }
   `

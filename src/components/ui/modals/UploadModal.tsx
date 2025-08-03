@@ -154,7 +154,7 @@ const UploadModal: React.FC<UploadFormProps> = ({onUpload, onClose}) => {
 
     return (
         <CenteredModal
-            animationVariants={getCenterModalVariants()}
+            centerModalVariants={getCenterModalVariants()}
             className="w-60 flex flex-col gap-4 text-sm relative"
         >
             <button

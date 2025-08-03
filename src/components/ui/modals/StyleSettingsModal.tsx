@@ -39,7 +39,7 @@ const StyleSettingsModal: React.FC<StyleSettingsModalProps> = ({
     return (
         <CenteredModal
             // 弹出动画配置
-            animationVariants={getCenterModalVariants()}
+            centerModalVariants={getCenterModalVariants()}
             // 弹框内容宽度与布局
             className="w-60 flex flex-col gap-4 text-sm"
             // 是否显示遮罩层

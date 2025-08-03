@@ -1,15 +1,27 @@
 import React, {useState} from 'react';
-import { BackgroundColorContext } from '@/contexts/BackgroundColorContext';
+import {BackgroundColorContext} from '@/contexts/BackgroundColorContext';
 
-
+/**
+ * 提供背景颜色状态的上下文组件
+ * 包含两个颜色状态：
+ * - starryBackgroundColor：控制星空背景的颜色
+ * - colorHex：控制许愿墙表面主色调
+ */
 const BackgroundColorProvider: React.FC<{ children: React.ReactNode }> = ({children}) => {
-    const [starryBackgroundColor, setStarryBackgroundColor] = useState('#000000'); // 新增
-    const [colorHex, setColorHex] = useState('#202040'); // 默认墙面颜色
+    // 星空背景颜色，默认值为黑色
+    const [starryBackgroundColor, setStarryBackgroundColor] = useState('#000000');
+
+    // 墙面主色调，默认颜色为深蓝灰（#202040）
+    const [colorHex, setColorHex] = useState('#202040');
 
     return (
+        // 将颜色状态及其修改函数传入上下文中，供后代组件使用
         <BackgroundColorContext.Provider
             value={{
-                starryBackgroundColor, setStarryBackgroundColor, colorHex, setColorHex
+                starryBackgroundColor,
+                setStarryBackgroundColor,
+                colorHex,
+                setColorHex
             }}
         >
             {children}

@@ -23,7 +23,7 @@ const PersonalInfoModal: React.FC<PersonalInfoModalProps> = ({onClose}) => {
     return (
         // 使用 CenteredModal 包裹内容，实现统一样式和居中布局
         <CenteredModal className="w-80 max-w-full flex flex-col gap-4 text-sm"
-                       animationVariants={getCenterModalVariants()}>
+                       centerModalVariants={getCenterModalVariants()}>
 
             {/* 关闭按钮，位于右上角，点击后调用 onClose 回调关闭弹窗 */}
             <button

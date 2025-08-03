@@ -87,7 +87,7 @@ const WishWall: React.FC = () => {
     return (
         <div className="w-screen h-screen">
             {/* 如果未登录或当前表单模式不是“上传”，则显示登录/注册/游客访问表单 */}
-            {(!isLoggedIn || formMode !== 'upload') && (
+            {(!isLoggedIn) && (
                 <AuthForm
                     formMode={formMode}
                     setFormMode={setFormMode}
