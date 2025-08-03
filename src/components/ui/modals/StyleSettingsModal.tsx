@@ -18,7 +18,14 @@ const StyleSettingsModal: React.FC<StyleSettingsModalProps> = ({
                                                                    withBackdrop = false,
                                                                }) => {
     // 取出颜色相关状态和修改方法（墙面颜色、星空背景色）
-    const {starryBackgroundColor, setStarryBackgroundColor, colorHex, setColorHex} = useBackgroundColor();
+    const {
+        starryBackgroundColor,
+        setStarryBackgroundColor,
+        wallColor,
+        setWallColor,
+        groundColor,
+        setGroundColor
+    } = useBackgroundColor();
 
     // 取出背景样式的当前值和修改函数（none、stars、gradient、grid）
     const {backgroundStyle, setBackgroundStyle} = useBackgroundStyle();
@@ -60,8 +67,8 @@ const StyleSettingsModal: React.FC<StyleSettingsModalProps> = ({
                 <span role="img" aria-label="wall" style={iconStyle}>🧱</span>
                 <input
                     type="color"
-                    value={colorHex}
-                    onChange={(e) => setColorHex(e.target.value)}
+                    value={wallColor}
+                    onChange={(e) => setWallColor(e.target.value)}
                     className="w-9 h-9 bg-transparent border-none rounded-md shadow-sm p-0 cursor-pointer"
                     style={{boxShadow: '0 0 5px rgba(0,0,0,0.3)'}}
                 />
@@ -76,6 +83,18 @@ const StyleSettingsModal: React.FC<StyleSettingsModalProps> = ({
                     onChange={(e) => setStarryBackgroundColor(e.target.value)}
                     className="w-9 h-9 bg-transparent border-none rounded-md shadow-sm p-0 cursor-pointer"
                     style={{boxShadow: '0 0 5px rgba(0,0,0,0.3)'}}
+                />
+            </label>
+
+            {/* 设置地面颜色 */}
+            <label title="地面颜色" className="flex items-center gap-2 cursor-pointer max-w-max">
+                <span role="img" aria-label="ground" style={iconStyle}>🪨</span>
+                <input
+                    type="color"
+                    value={groundColor}
+                    onChange={(e) => setGroundColor(e.target.value)}
+                    className="w-9 h-9 bg-transparent border-none rounded-md shadow-sm p-0 cursor-pointer"
+                    style={{ boxShadow: '0 0 5px rgba(0,0,0,0.3)' }}
                 />
             </label>
 

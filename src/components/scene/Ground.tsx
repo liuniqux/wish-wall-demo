@@ -1,5 +1,6 @@
 import React from 'react';
 import {useSpring, a} from '@react-spring/three';
+import {useBackgroundColor} from "@/contexts/BackgroundColorContext.tsx";
 
 interface GroundProps {
     groundLength: number;
@@ -7,6 +8,9 @@ interface GroundProps {
 
 const Ground: React.FC<GroundProps> = ({groundLength}) => {
     const safeLength = groundLength && groundLength > 0 ? groundLength : 1;
+
+    // 获取颜色
+    const { groundColor } = useBackgroundColor();
 
     const {scaleY, posZ} = useSpring({
         scaleY: safeLength,
@@ -24,7 +28,7 @@ const Ground: React.FC<GroundProps> = ({groundLength}) => {
         >
             {/* 固定高度为 1，通过 scaleY 实现动画拉伸 */}
             <planeGeometry args={[30, 1]}/>
-            <meshStandardMaterial color="#888"/>
+            <meshStandardMaterial color={groundColor} />
         </a.mesh>
     );
 };

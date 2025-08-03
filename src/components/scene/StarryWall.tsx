@@ -78,8 +78,8 @@ const StarryWall: React.FC<{ wallLength: number }> = ({wallLength}) => {
     const rightRef = useRef<THREE.ShaderMaterial>(null);
 
     // 读取上下文中的墙体颜色
-    const {colorHex} = useBackgroundColor();
-    const baseColor = new THREE.Color(colorHex);
+    const {wallColor} = useBackgroundColor();
+    const baseColor = new THREE.Color(wallColor);
 
     // 使用 spring 动画平滑插值 wallLength
     const {animatedLength} = useSpring({
