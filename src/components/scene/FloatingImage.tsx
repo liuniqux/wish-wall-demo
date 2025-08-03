@@ -84,7 +84,15 @@ const FloatingImage: React.FC<FloatingImageProps> = React.memo(({url, index, onD
 
     // 根据 index 计算每张图像的位置与朝向
     const x = index % 2 === 0 ? -WALL_OFFSET + 0.01 : WALL_OFFSET - 0.01;
-    const y = maxY;
+
+    // 基础起点 + 额外偏移，index控制分散范围
+    // 随机上下波动 +/-0.75
+    const startY = React.useMemo(() => {
+        const randomYOffset = (Math.random()) * 1.5;
+        // 按照索引也错开0.5个位置
+        return maxY + randomYOffset - index * 0.5;
+    }, [index]);
+
     const z = -index * SINGLE_WISH_LENGTH - SINGLE_WISH_LENGTH / 2 - GLOBAL_WALL_OFFSET;
     const rotationY = x < 0 ? Math.PI / 2 : -Math.PI / 2;
     const wallOffset = x < 0 ? x + 0.0001 : x - 0.0001;
@@ -154,7 +162,7 @@ const FloatingImage: React.FC<FloatingImageProps> = React.memo(({url, index, onD
     return (
         <group
             ref={ref}
-            position={[wallOffset, y, z]}
+            position={[wallOffset, startY, z]}
             rotation={[0, rotationY, 0]}
             frustumCulled={false}
             onPointerOver={() => setHoveredCanvas(true)}

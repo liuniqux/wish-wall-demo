@@ -70,7 +70,7 @@ src/
 │   ├── useCameraDrop.ts
 │   ├── useImageListWithBuffer.ts
 │   ├── usePanelDrag.ts
-│   ├── useWallAndCamera.ts
+│   ├── useWallAndGround.ts
 │   └── useWishWall.ts
 ├── providers/                 # 上下文提供者
 │   ├── BackgroundColorProvider.tsx

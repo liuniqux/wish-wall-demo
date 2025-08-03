@@ -2,6 +2,7 @@ import React, {useRef} from 'react';
 import {extend, useFrame} from '@react-three/fiber';
 import {shaderMaterial} from '@react-three/drei';
 import * as THREE from 'three';
+import {useSpring, a} from '@react-spring/three';
 import {useBackgroundColor} from '@/contexts/BackgroundColorContext.tsx';
 
 /**
@@ -70,16 +71,23 @@ const StarfieldMaterial = shaderMaterial(
 extend({StarfieldMaterial});
 
 /**
- * StarryWall 组件 - 左右两侧墙面流动星空效果。
+ * 🌌 StarryWall 组件：展示动态流星墙体，带有动画过渡。
  */
-const StarryWall: React.FC<{ height: number }> = ({height}) => {
+const StarryWall: React.FC<{ wallLength: number }> = ({wallLength}) => {
     const leftRef = useRef<THREE.ShaderMaterial>(null);
     const rightRef = useRef<THREE.ShaderMaterial>(null);
-    // 读取背景色上下文
+
+    // 读取上下文中的墙体颜色
     const {colorHex} = useBackgroundColor();
     const baseColor = new THREE.Color(colorHex);
 
-    // 每帧更新 Shader 中的时间与颜色
+    // 使用 spring 动画平滑插值 wallLength
+    const {animatedLength} = useSpring({
+        animatedLength: wallLength,
+        config: {tension: 80, friction: 30},
+    });
+
+    // 更新 Shader 中的时间和背景颜色
     useFrame(({clock}) => {
         const t = clock.getElapsedTime();
         if (leftRef.current) {
@@ -94,27 +102,33 @@ const StarryWall: React.FC<{ height: number }> = ({height}) => {
 
     return (
         <group>
-            {/* 左墙 - 流星从左向右 */}
-            <mesh position={[-6, 0, -height / 2]} rotation={[0, Math.PI / 2, 0]}>
-                <boxGeometry args={[height, 5, 0.3]}/>
+            {/* 左侧墙体 - 从左到右流星 */}
+            <a.mesh
+                position={animatedLength.to(len => [-6, 0, -len / 2])}
+                rotation={[0, Math.PI / 2, 0]}
+            >
+                <boxGeometry args={[wallLength, 5, 0.3]}/>
                 <starfieldMaterial
                     ref={leftRef}
                     attach="material"
                     uniforms-direction-value={new THREE.Vector2(1.0, 0.0)}
                     uniforms-offset-value={Math.random() * 100}
                 />
-            </mesh>
+            </a.mesh>
 
-            {/* 右墙 - 流星从右向左 */}
-            <mesh position={[6, 0, -height / 2]} rotation={[0, -Math.PI / 2, 0]}>
-                <boxGeometry args={[height, 5, 0.3]}/>
+            {/* 右侧墙体 - 从右向左流星 */}
+            <a.mesh
+                position={animatedLength.to(len => [6, 0, -len / 2])}
+                rotation={[0, -Math.PI / 2, 0]}
+            >
+                <boxGeometry args={[wallLength, 5, 0.3]}/>
                 <starfieldMaterial
                     ref={rightRef}
                     attach="material"
                     uniforms-direction-value={new THREE.Vector2(-1.0, 0.0)}
                     uniforms-offset-value={Math.random() * 100}
                 />
-            </mesh>
+            </a.mesh>
         </group>
     );
 };

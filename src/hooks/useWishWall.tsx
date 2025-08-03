@@ -3,7 +3,7 @@ import {useRef} from 'react';
 
 import {useAuth} from '@/hooks/useAuth';
 import {useImageListWithBuffer} from '@/hooks/useImageListWithBuffer';
-import {useWallAndCamera} from '@/hooks/useWallAndCamera';
+import {useWallAndGround} from '@/hooks/useWallAndGround.tsx';
 import {useCameraDrop} from '@/hooks/useCameraDrop';
 
 /**
@@ -103,7 +103,7 @@ export const useWishWall = () => {
         wallLength,
         // 地面长度
         groundLength,
-    } = useWallAndCamera(imageList.length);
+    } = useWallAndGround(imageList.length);
 
     /**
      * 返回统一的数据结构，供 WishWall 主组件使用。

@@ -1,10 +1,10 @@
 import {useState, useEffect} from 'react';
 
 /**
- * 管理墙面长度和地面长度，并提供相机下落控制逻辑。
+ * 管理墙面长度和地面长度。
  * @param imageCount 当前图片数量
  */
-export const useWallAndCamera = (imageCount: number) => {
+export const useWallAndGround = (imageCount: number) => {
     // 墙面长度，随图片数量变化自动调整
     const [wallLength, setWallLength] = useState(10);
 

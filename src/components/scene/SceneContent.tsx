@@ -87,7 +87,7 @@ const SceneContent: React.FC<SceneContentProps> = ({
 
                 {/* 地面与背景墙 */}
                 <Ground groundLength={groundLength}/>
-                <StarryWall height={wallLength}/>
+                <StarryWall wallLength={wallLength}/>
 
                 {/* 渲染已有图片 */}
                 <Suspense fallback={null}>
