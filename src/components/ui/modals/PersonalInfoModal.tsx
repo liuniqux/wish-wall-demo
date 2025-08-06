@@ -1,11 +1,9 @@
 import React from 'react';
 
-// 引入 Feather Icons 的关闭图标
-import {FiX} from 'react-icons/fi';
-
 // 引入通用弹窗容器组件
 import CenteredModal from '@/components/ui/modals/CenteredModal.tsx';
 import {getCenterModalVariants} from "@/utils/animation.tsx";
+import CloseButton from "@/components/ui/CloseButton.tsx";
 
 /**
  * PersonalInfoModalProps 定义了弹窗组件所需的 props 类型
@@ -25,14 +23,8 @@ const PersonalInfoModal: React.FC<PersonalInfoModalProps> = ({onClose}) => {
         <CenteredModal className="w-80 max-w-full flex flex-col gap-4 text-sm"
                        centerModalVariants={getCenterModalVariants()}>
 
-            {/* 关闭按钮，位于右上角，点击后调用 onClose 回调关闭弹窗 */}
-            <button
-                onClick={onClose}
-                className="absolute top-2 right-2 text-white/50 hover:text-white"
-                aria-label="关闭"
-            >
-                <FiX size={16}/>
-            </button>
+            {/* 关闭按钮，位于右上角 */}
+            <CloseButton onClose={onClose}/>
 
             {/* 主体内容区域，居中展示标题与占位提示 */}
             <div className="text-center">

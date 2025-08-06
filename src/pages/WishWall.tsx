@@ -17,6 +17,7 @@ import BackgroundColorProvider from '@/providers/BackgroundColorProvider.tsx';
 
 // 背景风格状态提供器，用于管理背景类型（如星空、线条、网格等）
 import BackgroundStyleProvider from '@/providers/BackgroundStyleProvider.tsx';
+import SceneEnvironmentProvider from "@/providers/SceneEnvironmentProvider.tsx";
 
 const WishWall: React.FC = () => {
     // 从 useWishWall 中解构出所有用于状态管理和交互处理的变量及函数
@@ -106,31 +107,36 @@ const WishWall: React.FC = () => {
             {/* 背景风格与颜色使用 Provider 管理状态，可全局响应切换 */}
             <BackgroundStyleProvider>
                 <BackgroundColorProvider>
-                    <SceneContent
-                        imageList={imageList}
-                        newImages={newImages}
-                        groundLength={groundLength}
-                        wallLength={wallLength}
-                        velocity={velocity}
-                        cameraDropEnabled={cameraDropEnabled}
-                        handleDelete={handleDelete}
-                        handlePreview={handlePreview}
-                        isLoggedIn={isLoggedIn}
-                        onLogout={handleLogout}
-                        onUpload={handleImageUpload}
-                    />
+                    <SceneEnvironmentProvider>
+                        <SceneContent
+                            imageList={imageList}
+                            newImages={newImages}
+                            groundLength={groundLength}
+                            wallLength={wallLength}
+                            velocity={velocity}
+                            cameraDropEnabled={cameraDropEnabled}
+                            handleDelete={handleDelete}
+                            handlePreview={handlePreview}
+                            isLoggedIn={isLoggedIn}
+                            onLogout={handleLogout}
+                            onUpload={handleImageUpload}
+                        />
+                    </SceneEnvironmentProvider>
                 </BackgroundColorProvider>
             </BackgroundStyleProvider>
 
             {/* 如果设置了预览图片，则显示预览弹窗 */}
-            {previewUrl && (
-                <PreviewModal
-                    image={previewUrl}
-                    onClose={() => setPreviewUrl(null)}
-                />
-            )}
+            {
+                previewUrl && (
+                    <PreviewModal
+                        image={previewUrl}
+                        onClose={() => setPreviewUrl(null)}
+                    />
+                )
+            }
         </div>
-    );
+    )
+        ;
 };
 
 export default WishWall;

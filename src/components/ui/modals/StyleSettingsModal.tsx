@@ -1,10 +1,10 @@
 import React from 'react';
-import {FiX} from 'react-icons/fi';
 import type {BackgroundStyle} from '@/types';
 import {useBackgroundColor} from '@/contexts/BackgroundColorContext.tsx';
 import {useBackgroundStyle} from '@/contexts/BackgroundStyleContext.tsx';
 import {getCenterModalVariants} from '@/utils/animation.tsx';
 import CenteredModal from "./CenteredModal.tsx";
+import CloseButton from "@/components/ui/CloseButton.tsx";
 
 interface StyleSettingsModalProps {
     onClose: () => void;
@@ -53,14 +53,7 @@ const StyleSettingsModal: React.FC<StyleSettingsModalProps> = ({
             showBackdrop={withBackdrop}
         >
             {/* 关闭按钮，位于右上角 */}
-            <button
-                onClick={onClose}
-                className="absolute top-2 right-2 text-white/50 hover:text-white"
-                aria-label="关闭"
-                type="button"
-            >
-                <FiX size={18}/>
-            </button>
+            <CloseButton onClose={onClose}/>
 
             {/* 设置墙面颜色 */}
             <label title="墙面颜色" className="flex items-center gap-2 cursor-pointer max-w-max">
@@ -94,7 +87,7 @@ const StyleSettingsModal: React.FC<StyleSettingsModalProps> = ({
                     value={groundColor}
                     onChange={(e) => setGroundColor(e.target.value)}
                     className="w-9 h-9 bg-transparent border-none rounded-md shadow-sm p-0 cursor-pointer"
-                    style={{ boxShadow: '0 0 5px rgba(0,0,0,0.3)' }}
+                    style={{boxShadow: '0 0 5px rgba(0,0,0,0.3)'}}
                 />
             </label>
 

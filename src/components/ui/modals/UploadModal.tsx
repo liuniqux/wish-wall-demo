@@ -1,8 +1,9 @@
 import React, {useEffect, useRef, useState} from 'react';
-import {FiAlertCircle, FiEye, FiMove, FiTrash2, FiUpload, FiX} from 'react-icons/fi';
+import {FiAlertCircle, FiEye, FiMove, FiTrash2, FiUpload} from 'react-icons/fi';
 import PreviewModal from '@/components/ui/modals/PreviewModal.tsx';
 import {getCenterModalVariants} from "@/utils/animation.tsx";
 import CenteredModal from "@/components/ui/modals/CenteredModal.tsx";
+import CloseButton from "@/components/ui/CloseButton.tsx";
 
 // 上传表单组件 Props，提供关闭与上传回调
 interface UploadFormProps {
@@ -157,14 +158,8 @@ const UploadModal: React.FC<UploadFormProps> = ({onUpload, onClose}) => {
             centerModalVariants={getCenterModalVariants()}
             className="w-60 flex flex-col gap-4 text-sm relative"
         >
-            <button
-                onClick={onClose}
-                className="absolute top-2 right-2 text-white/50 hover:text-white"
-                aria-label="关闭"
-                type="button"
-            >
-                <FiX size={18}/>
-            </button>
+            {/* 关闭按钮，位于右上角 */}
+            <CloseButton onClose={onClose}/>
 
             <div className="flex flex-col gap-4">
                 {/* 上传文件按钮区域 */}

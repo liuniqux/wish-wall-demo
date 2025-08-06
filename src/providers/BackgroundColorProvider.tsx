@@ -11,7 +11,7 @@ const BackgroundColorProvider: React.FC<{ children: React.ReactNode }> = ({child
     // 星空背景颜色，默认值为黑色
     const [starryBackgroundColor, setStarryBackgroundColor] = useState('#000000');
 
-    // 墙面主色调，默认颜色为深蓝灰（#202040）
+    // 墙面主色调，默认颜色为深蓝灰
     const [wallColor, setWallColor] = useState('#202040');
 
     // 地面颜色，默认灰色地面

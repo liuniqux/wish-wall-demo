@@ -32,3 +32,11 @@ export type Direction = 'top' | 'bottom' | 'right' | 'left';
  * - null：无面板激活，所有面板关闭
  */
 export type ActiveModel = 'style' | 'personal' | 'upload' | null;
+
+/**
+ * 当前激活的背景
+ * - 'default'：默认星空背景
+ * - 'hdr'：hdr全景
+ * - 'none'：无背景
+ */
+export type EnvironmentMode = 'default' | 'hdr' | 'minimal' | 'none';

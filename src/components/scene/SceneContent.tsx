@@ -1,6 +1,5 @@
 import React, {Suspense} from 'react';
 import {Canvas} from '@react-three/fiber';
-import {Stars} from '@react-three/drei';
 import * as THREE from 'three';
 
 import FloatingImage from '@/components/scene/FloatingImage.tsx';
@@ -10,6 +9,7 @@ import StarryWall from '@/components/scene/StarryWall.tsx';
 import CameraResetter from '@/components/scene/CameraResetter.tsx';
 import {useBackgroundColor} from '@/contexts/BackgroundColorContext.tsx';
 import SceneSettingsPanel from '@/components/ui/SceneSettingsPanel.tsx';
+import SceneEnvironment from "@/components/scene/SceneEnvironment.tsx";
 
 /**
  * 相机初始位置设置
@@ -46,6 +46,8 @@ interface SceneContentProps {
     onLogout: () => void;
     // 图片上传事件处理
     onUpload: (e: React.ChangeEvent<HTMLInputElement>) => void;
+    // HDR加载完成后回调
+    onHDRLoaded?: () => void;
 }
 
 /**
@@ -64,8 +66,10 @@ const SceneContent: React.FC<SceneContentProps> = ({
                                                        isLoggedIn,
                                                        onLogout,
                                                        onUpload,
+                                                       onHDRLoaded,
                                                    }) => {
-    const {starryBackgroundColor} = useBackgroundColor(); // 获取背景色上下文
+    // 获取背景色上下文
+    const {starryBackgroundColor} = useBackgroundColor();
 
     return (
         <div style={{width: '100vw', height: '100vh'}}>
@@ -80,8 +84,7 @@ const SceneContent: React.FC<SceneContentProps> = ({
                 style={{backgroundColor: starryBackgroundColor}}
                 gl={{localClippingEnabled: true}}
             >
-                {/* 星空背景与光照设置 */}
-                <Stars radius={100} depth={50} count={2000} factor={4} saturation={0} fade/>
+                <SceneEnvironment onHDRLoaded={onHDRLoaded}/>
                 <ambientLight intensity={0.4}/>
                 <directionalLight position={[5, 10, 5]} intensity={1} castShadow/>
 

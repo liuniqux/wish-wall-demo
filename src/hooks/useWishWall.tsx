@@ -1,79 +1,59 @@
-import * as THREE from 'three';
-import {useRef} from 'react';
-
-import {useAuth} from '@/hooks/useAuth';
 import {useImageListWithBuffer} from '@/hooks/useImageListWithBuffer';
-import {useWallAndGround} from '@/hooks/useWallAndGround.tsx';
-import {useCameraDrop} from '@/hooks/useCameraDrop';
+import {useWallAndGround} from '@/hooks/useWallAndGround';
+import {useSceneControl} from '@/hooks/useSceneControl';
+import {useLoginForm} from '@/hooks/useLoginForm';
+import {useState} from 'react';
+import {useLogout} from "@/hooks/useLogout.tsx";
 
 /**
- * useWishWall 是许愿墙的业务逻辑统一管理 Hook，
- * 负责整合用户登录、图片管理、墙面布局、摄像机逻辑等多个子模块的状态与操作。
+ * useWishWall：许愿墙业务聚合 Hook
+ * - 聚合登录表单状态、图片墙管理、摄像机控制、墙体布局等逻辑
  */
 export const useWishWall = () => {
     /**
-     * 用于记录摄像机下落时的速度（物理模拟），
-     * 通过 useRef 创建一个可变引用，避免组件重渲染。
-     */
-    const velocity = useRef(new THREE.Vector3());
-
-    /**
-     * 摄像机“下落动画”状态控制：
-     * cameraDropEnabled - 当前是否启用摄像机下落效果
-     * enableDrop / disableDrop - 显式启用或禁用摄像机下落
+     * 用户登录表单管理
+     * 三个行为分别为登录成功 / 注册成功 / 游客登录时调用摄像机动画
      */
     const {
-        cameraDropEnabled,
-        enableDrop,
-        disableDrop,
-    } = useCameraDrop();
-
-    /**
-     * 用户认证状态与方法，通过 useAuth 管理。
-     * 提供登录、注册、访客登录、退出等功能。
-     * 登录状态变更时，触发摄像机动画控制（如启用下落）。
-     */
-    const {
-        // 当前登录状态
-        isLoggedIn,
-        // 当前表单模式（登录或注册）
-        formMode,
-        // 设置表单模式
-        setFormMode,
-        // 用户名输入值
-        username,
-        // 设置用户名
-        setUsername,
-        // 密码输入值
-        password,
-        // 设置密码
-        setPassword,
-        // 当前表单错误信息
-        error,
-        // 设置错误信息
-        setError,
-        // 执行登录
+        formMode, setFormMode,
+        username, setUsername,
+        password, setPassword,
+        loginError, setLoginError,
+        registerError, setRegisterError,
+        loading,
         handleLogin,
         // 执行注册
         handleRegister,
         // 执行访客登录
         handleVisitorLogin,
-        // 执行登出
-        handleLogout,
-    } = useAuth({
-        // 登录状态变化后的回调，用于触发摄像机动画
-        onLoginChange: (loggedIn) => {
-            if (loggedIn) {
-                enableDrop();
-            } else {
-                disableDrop();
-            }
-        }
-    });
+        resetForm,
+    } = useLoginForm(
+        () => setLoggedIn(true),
+        () => setLoggedIn(true),
+        () => setLoggedIn(true),
+    );
 
     /**
-     * 图片墙图片管理逻辑，使用带有缓冲区的 Hook 管理 imageList 与 newImages。
-     * 支持上传、删除、预览、初始设置等操作。
+     * 全局登录状态控制，用于决定摄像机是否启用下落
+     */
+    const [isLoggedIn, setLoggedIn] = useState(false);
+
+    const {handleLogout} = useLogout(() => {
+        setLoggedIn(false);
+    })
+
+    /**
+     * 摄像机控制，包括 velocity 和 cameraDropEnabled
+     * 登录状态变更时自动触发 enable/disable drop
+     */
+    const {
+        velocity,
+        setVelocity,
+        cameraDropEnabled,
+    } = useSceneControl(isLoggedIn);
+
+    /**
+     * 图片上传管理，包括列表、缓存、预览等
      */
     const {
         // 当前展示的图片列表（已上传 + 缓存）
@@ -95,48 +75,49 @@ export const useWishWall = () => {
     } = useImageListWithBuffer();
 
     /**
-     * 根据图片数量动态计算墙面长度与地面长度。
-     * 保证图片分布合理、摄像机视角自然。
+     * 根据图片数量自动计算墙长与地面长
      */
-    const {
-        // 墙面长度
-        wallLength,
-        // 地面长度
-        groundLength,
-    } = useWallAndGround(imageList.length);
+    const {wallLength, groundLength} = useWallAndGround(imageList.length);
 
     /**
-     * 返回统一的数据结构，供 WishWall 主组件使用。
-     * 所有 UI 层面所需的状态和操作均从此 Hook 获取。
+     * 返回统一结构供 WishWall 主组件使用
      */
     return {
+        // 登录相关
         isLoggedIn,
-        formMode,
-        setFormMode,
-        username,
-        setUsername,
-        password,
-        setPassword,
-        error,
-        setError,
+        formMode, setFormMode,
+        username, setUsername,
+        password, setPassword,
 
-        // 摄像机速度向量
-        velocity: velocity.current,
-        imageList,
-        newImages,
-        previewUrl,
-        setPreviewUrl,
-        wallLength,
-        groundLength,
-        cameraDropEnabled,
+        // 统一错误和 setError 映射
+        error: formMode === 'login' ? loginError : formMode === 'register' ? registerError : null,
+        setError: formMode === 'login' ? setLoginError : formMode === 'register' ? setRegisterError : () => {
+        },
 
-        handleImageUpload,
-        handleDelete,
-        handlePreview,
+        loading,
         handleLogin,
         handleRegister,
         handleVisitorLogin,
         handleLogout,
+        resetForm,
+
+        // 摄像机相关
+        velocity,
+        setVelocity,
+        cameraDropEnabled,
+
+        // 图片相关
+        imageList,
+        newImages,
+        previewUrl,
+        setPreviewUrl,
+        handleImageUpload,
+        handleDelete,
+        handlePreview,
         setInitialImages,
+
+        // 场景尺寸
+        wallLength,
+        groundLength,
     };
 };

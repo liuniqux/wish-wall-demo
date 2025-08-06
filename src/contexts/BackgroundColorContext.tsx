@@ -2,14 +2,16 @@ import {createContext, useContext} from 'react';
 
 // 定义背景颜色上下文接口，包含当前颜色和对应的更新函数
 interface BackgroundColorContext {
-    // 当前背景颜色的十六进制字符串
+    // 当前背景颜色的
     wallColor: string;
     // 用于更新背景颜色的函数
     setWallColor: (hex: string) => void;
-    // 星辰背景颜色的十六进制字符串
+
+    // 星辰背景颜色
     starryBackgroundColor: string;
     // 用于更新星辰背景颜色的函数
     setStarryBackgroundColor: (hex: string) => void;
+
     // 地面颜色
     groundColor: string;
     // 用于更新地面颜色的函数
