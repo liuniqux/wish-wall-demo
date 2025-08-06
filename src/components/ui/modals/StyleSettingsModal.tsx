@@ -1,10 +1,10 @@
 import React from 'react';
-import type {BackgroundStyle} from '@/types';
+import type {EnvironmentMode} from '@/types';
 import {useBackgroundColor} from '@/contexts/BackgroundColorContext.tsx';
-import {useBackgroundStyle} from '@/contexts/BackgroundStyleContext.tsx';
 import {getCenterModalVariants} from '@/utils/animation.tsx';
 import CenteredModal from "./CenteredModal.tsx";
 import CloseButton from "@/components/ui/CloseButton.tsx";
+import {useSceneEnvironment} from "@/contexts/SceneEnvironmentContext.tsx";
 
 interface StyleSettingsModalProps {
     onClose: () => void;
@@ -28,7 +28,7 @@ const StyleSettingsModal: React.FC<StyleSettingsModalProps> = ({
     } = useBackgroundColor();
 
     // 取出背景样式的当前值和修改函数（none、stars、gradient、grid）
-    const {backgroundStyle, setBackgroundStyle} = useBackgroundStyle();
+    const {mode, setMode} = useSceneEnvironment();
 
     // 图标的统一样式定义
     const iconStyle: React.CSSProperties = {
@@ -95,14 +95,14 @@ const StyleSettingsModal: React.FC<StyleSettingsModalProps> = ({
             <label title="背景样式" className="flex items-center gap-2 cursor-pointer">
                 <span role="img" aria-label="style" style={iconStyle}>🎨</span>
                 <select
-                    value={backgroundStyle}
-                    onChange={(e) => setBackgroundStyle(e.target.value as BackgroundStyle)}
+                    value={mode}
+                    onChange={(e) => setMode(e.target.value as EnvironmentMode)}
                     className="flex-grow px-2 py-1 rounded-lg bg-[#2a2a38] text-white border border-gray-600 cursor-pointer text-sm"
                 >
                     <option value="none">无</option>
-                    <option value="stars">星空</option>
-                    <option value="gradient">渐变</option>
-                    <option value="grid">网格</option>
+                    <option value="default">星空</option>
+                    <option value="hdr">hdr</option>
+                    {/*<option value="grid">网格</option>*/}
                 </select>
             </label>
         </CenteredModal>
