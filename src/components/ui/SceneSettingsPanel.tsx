@@ -127,7 +127,7 @@ const SceneSettingsPanel: React.FC<SceneSettingsPanelProps> = ({onLogout, onUplo
                                 className="px-3 py-2.5 rounded bg-[#1a2235] hover:bg-[#242e49] text-left text-white flex items-center gap-2 transition-colors"
                             >
                                 <div className="w-6 h-6 flex items-center justify-center">
-                                    <FiSettings size={16} />
+                                    <FiSettings size={16}/>
                                 </div>
                                 样式
                             </button>
@@ -138,7 +138,7 @@ const SceneSettingsPanel: React.FC<SceneSettingsPanelProps> = ({onLogout, onUplo
                                 className="px-3 py-2.5 rounded bg-[#1a2235] hover:bg-[#242e49] text-left text-white flex items-center gap-2 transition-colors"
                             >
                                 <div className="w-6 h-6 flex items-center justify-center">
-                                    <FiUser size={16} />
+                                    <FiUser size={16}/>
                                 </div>
                                 个人信息
                             </button>
@@ -149,7 +149,7 @@ const SceneSettingsPanel: React.FC<SceneSettingsPanelProps> = ({onLogout, onUplo
                                 className="px-3 py-2.5 rounded bg-[#1a2235] hover:bg-[#242e49] text-left text-white flex items-center gap-2 transition-colors"
                             >
                                 <div className="w-6 h-6 flex items-center justify-center">
-                                    <FiUpload size={16} color="#3b82f6" />
+                                    <FiUpload size={16} color="#3b82f6"/>
                                 </div>
                                 上传
                             </button>
@@ -160,7 +160,7 @@ const SceneSettingsPanel: React.FC<SceneSettingsPanelProps> = ({onLogout, onUplo
                                 className="px-3 py-2.5 rounded bg-[#1a2235] hover:bg-[#242e49] text-left text-white flex items-center gap-2 transition-colors"
                             >
                                 <div className="w-6 h-6 flex items-center justify-center">
-                                    <FiLogOut size={16} color="#e53e3e" />
+                                    <FiLogOut size={16} color="#e53e3e"/>
                                 </div>
                                 退出
                             </button>

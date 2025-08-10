@@ -99,7 +99,8 @@ const StyleSettingsModal: React.FC<StyleSettingsModalProps> = ({
                     <div className="dropdown-container relative">
                         <button
                             onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-                            className={`w-full px-3 py-2 flex items-center justify-between rounded-lg 
+                            onBlur={() => setIsDropdownOpen(false)}
+                            className={`w-full px-3 py-2 flex items-center justify-between rounded-lg bg-[#1a1a32] focus:outline-none
                 ${isDropdownOpen ? 'border-blue-500 bg-[#21283b]' : 'border-transparent bg-[#1a1f2d]'} 
                 border-2 backdrop-blur-md text-sm transition-all duration-200 hover:bg-[#21283b]`}
                         >
@@ -124,14 +125,14 @@ const StyleSettingsModal: React.FC<StyleSettingsModalProps> = ({
                                     className="absolute mt-1 w-full z-10 rounded-lg overflow-hidden"
                                 >
                                     <div
-                                        className="bg-[#1a1f2d] backdrop-blur-xl border border-blue-500/30 shadow-[0_4px_20px_rgba(0,0,0,0.4)] rounded-lg">
+                                        className="bg-[rgba(26,31,45,0.5)] backdrop-blur-xl border border-blue-500/30 shadow-[0_4px_20px_rgba(0,0,0,0.4)] rounded-lg">
                                         {dropdownOptions.map(option => (
                                             <button
                                                 key={option.value}
                                                 className={`w-full text-left px-3 py-2 text-sm cursor-pointer transition-all flex items-center 
                           ${mode === option.value
-                                                    ? 'bg-black-800/30 text-blue-300'
-                                                    : 'text-gray-300 bg-black hover:bg-[#21283b]'}`}
+                                                    ? 'bg-[rgba(0,0,0,0.3)] text-blue-300'
+                                                    : 'text-gray-300 bg-[rgba(33,40,59,0.5)] hover:bg-[rgba(33,40,59,0.7)]'}`}
                                                 onClick={() => {
                                                     switchMode(option.value as EnvironmentMode);
                                                     setIsDropdownOpen(false);
