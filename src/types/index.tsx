@@ -35,8 +35,17 @@ export type ActiveModel = 'style' | 'personal' | 'upload' | null;
 
 /**
  * 当前激活的背景
- * - 'default'：默认星空背景
+ * - 'cosmic'：宇宙组件环境
  * - 'hdr'：hdr全景
+ * - 'minimal'：仅环境光
  * - 'none'：无背景
  */
-export type EnvironmentMode = 'default' | 'hdr' | 'minimal' | 'none';
+export type EnvironmentMode = 'cosmic' | 'hdr' | 'minimal' | 'none';
+
+/**
+ * 环境组件
+ * - 'stars'：星空
+ * - 'sky'：太阳
+ * - 'sparkles'：闪光
+ */
+export type EnvironmentComponent = 'stars' | 'sky' | 'sparkles';

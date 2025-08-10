@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { Environment, useProgress, Html } from '@react-three/drei';
+import { Environment, useProgress } from '@react-three/drei';
 
 interface HDRBackgroundLoaderProps {
     /** .hdr 文件路径（必须放在 public 目录内） */
@@ -21,7 +21,6 @@ interface HDRBackgroundLoaderProps {
 const HDRBackgroundLoader: React.FC<HDRBackgroundLoaderProps> = ({
                                                                      hdrPath,
                                                                      onLoaded,
-                                                                     fallback,
                                                                  }) => {
     const { loaded, total } = useProgress();
     const isReady = loaded === total;
@@ -34,13 +33,6 @@ const HDRBackgroundLoader: React.FC<HDRBackgroundLoaderProps> = ({
 
     return (
         <>
-            {!isReady && (
-                <Html center>
-                    {fallback ?? (
-                        <div style={{ color: 'white', fontSize: '1rem' }}>星空加载中...</div>
-                    )}
-                </Html>
-            )}
             {isReady && (
                 <Environment files={hdrPath} background />
             )}

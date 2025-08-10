@@ -1,8 +1,9 @@
 import React, {useEffect, useRef, useState} from 'react';
 import * as THREE from 'three';
-import {useFrame, useLoader} from '@react-three/fiber';
+import {useFrame} from '@react-three/fiber';
 import {Html} from '@react-three/drei';
 import {FaDownload, FaSearchPlus, FaTrash} from 'react-icons/fa';
+import useSafeTexture from "@/hooks/useSafeTexture.tsx";
 
 // 墙面偏移值，决定图片左右分布的距离
 const WALL_OFFSET = 5.82;
@@ -45,10 +46,10 @@ interface FloatingImageProps {
 const FloatingImage: React.FC<FloatingImageProps> = React.memo(({url, index, onDelete, onPreview}) => {
     const ref = useRef<THREE.Group>(null);
 
-    // 加载图片纹理
-    const texture = useLoader(THREE.TextureLoader, url);
+    // 使用安全纹理加载
+    const texture = useSafeTexture(url, '/textures/wall.jpg'); // 你可以换成自己项目里的占位图
 
-    // 图像在画布中的宽高比例（初始为 [2, 1]，随后根据实际图像设置）
+    // 宽高比例
     const [dimensions, setDimensions] = useState<[number, number]>([2, 1]);
 
     // 悬停状态：分别检测画布区域和 HTML 面板区域是否悬停
@@ -65,21 +66,14 @@ const FloatingImage: React.FC<FloatingImageProps> = React.memo(({url, index, onD
     // 相位偏移值（使不同图片摇摆不同步）
     const phase = React.useMemo(() => Math.random() * Math.PI * 2, []);
 
-    // 设置纹理宽高和过滤器，仅在初始加载时执行一次
+    // 根据纹理更新宽高
     useEffect(() => {
-        if (texture.image) {
+        if (texture && texture.image) {
             const {width, height} = texture.image;
             const ratio = width / height;
             const widthUnits = ratio * heightUnits;
             setDimensions([widthUnits, heightUnits]);
         }
-
-        texture.minFilter = THREE.LinearMipMapLinearFilter;
-        texture.magFilter = THREE.LinearFilter;
-
-        return () => {
-            texture.dispose();
-        };
     }, [texture]);
 
     // 根据 index 计算每张图像的位置与朝向
@@ -88,14 +82,13 @@ const FloatingImage: React.FC<FloatingImageProps> = React.memo(({url, index, onD
     // 基础起点 + 额外偏移，index控制分散范围
     // 随机上下波动 +/-0.75
     const startY = React.useMemo(() => {
-        const randomYOffset = (Math.random()) * 1.5;
-        // 按照索引也错开0.5个位置
+        const randomYOffset = Math.random() * 1.5;
         return maxY + randomYOffset - index * 0.5;
     }, [index]);
 
     const z = -index * SINGLE_WISH_LENGTH - SINGLE_WISH_LENGTH / 2 - GLOBAL_WALL_OFFSET;
     const rotationY = x < 0 ? Math.PI / 2 : -Math.PI / 2;
-    const wallOffset = x < 0 ? x + 0.0001 : x - 0.0001;
+    const wallOffset = x < 0 ? x - 0.029 : x + 0.029;
 
     // 设置裁剪平面用于控制 mesh 可见区域
     const clippingPlane = new THREE.Plane(new THREE.Vector3(0, -1, 0), MAX_VISIBLE_Y);
@@ -137,12 +130,7 @@ const FloatingImage: React.FC<FloatingImageProps> = React.memo(({url, index, onD
     const handleDownload = async (url: string) => {
         try {
             const response = await fetch(url, {mode: 'cors'});
-            if (!response.ok) {
-                console.error('下载失败，HTTP状态码:', response.status);
-                alert('下载失败，请稍后再试');
-                return;
-            }
-
+            if (!response.ok) throw new Error(`HTTP ${response.status}`);
             const blob = await response.blob();
             const blobUrl = window.URL.createObjectURL(blob);
             const link = document.createElement('a');
@@ -153,7 +141,7 @@ const FloatingImage: React.FC<FloatingImageProps> = React.memo(({url, index, onD
             link.remove();
             window.URL.revokeObjectURL(blobUrl);
         } catch (error) {
-            console.error('下载图片失败:', error);
+            console.error('下载失败', error);
             alert('下载失败，请稍后再试');
         }
     };
@@ -168,15 +156,17 @@ const FloatingImage: React.FC<FloatingImageProps> = React.memo(({url, index, onD
             onPointerOver={() => setHoveredCanvas(true)}
             onPointerOut={() => setHoveredCanvas(false)}
         >
-            <mesh position={[0, 0, -0.01]}>
-                <planeGeometry args={dimensions}/>
-                <meshBasicMaterial
-                    map={texture}
-                    transparent={false}
-                    depthWrite={true}
-                    clippingPlanes={[clippingPlane]}
-                />
-            </mesh>
+            {texture && (
+                <mesh position={[0, 0, -0.01]}>
+                    <planeGeometry args={dimensions}/>
+                    <meshBasicMaterial
+                        map={texture}
+                        transparent={false}
+                        depthWrite={true}
+                        clippingPlanes={[clippingPlane]}
+                    />
+                </mesh>
+            )}
 
             {hovered && visible && (
                 <Html
@@ -191,16 +181,16 @@ const FloatingImage: React.FC<FloatingImageProps> = React.memo(({url, index, onD
                         onMouseLeave={() => setHoveredHtml(false)}
                         onMouseDown={e => e.preventDefault()}
                         className="
-                                    absolute top-1/2 left-1/2
-                                    flex gap-3
-                                    bg-black bg-opacity-60
-                                    px-3 py-1.5
-                                    rounded-lg
-                                    -translate-x-1/2 -translate-y-1/2
-                                    z-10
-                                    select-none
-                                    items-center justify-center
-                                  "
+                            absolute top-1/2 left-1/2
+                            flex gap-3
+                            bg-black bg-opacity-60
+                            px-3 py-1.5
+                            rounded-lg
+                            -translate-x-1/2 -translate-y-1/2
+                            z-10
+                            select-none
+                            items-center justify-center
+                          "
                     >
                         <FaSearchPlus
                             tabIndex={-1}
@@ -210,13 +200,7 @@ const FloatingImage: React.FC<FloatingImageProps> = React.memo(({url, index, onD
                                 setHoveredHtml(false);
                                 onPreview?.(url);
                             }}
-                            className="
-                                        text-blue-500
-                                        cursor-pointer
-                                        text-xl
-                                        select-none
-                                        hover:text-blue-400
-                                      "
+                            className="text-blue-500 cursor-pointer text-xl select-none hover:text-blue-400"
                             title="放大"
                         />
                         <FaDownload
@@ -227,13 +211,7 @@ const FloatingImage: React.FC<FloatingImageProps> = React.memo(({url, index, onD
                                 setHoveredHtml(false);
                                 await handleDownload(url);
                             }}
-                            className="
-                                        text-green-500
-                                        cursor-pointer
-                                        text-xl
-                                        select-none
-                                        hover:text-green-400
-                                      "
+                            className="text-green-500 cursor-pointer text-xl select-none hover:text-green-400"
                             title="下载"
                         />
                         <FaTrash
@@ -244,13 +222,7 @@ const FloatingImage: React.FC<FloatingImageProps> = React.memo(({url, index, onD
                                 setHoveredHtml(false);
                                 onDelete(url);
                             }}
-                            className="
-                                        text-red-500
-                                        cursor-pointer
-                                        text-xl
-                                        select-none
-                                        hover:text-red-400
-                                      "
+                            className="text-red-500 cursor-pointer text-xl select-none hover:text-red-400"
                             title="删除"
                         />
                     </div>

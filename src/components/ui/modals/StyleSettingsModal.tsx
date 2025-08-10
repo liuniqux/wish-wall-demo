@@ -8,8 +8,6 @@ import {useSceneEnvironment} from "@/contexts/SceneEnvironmentContext.tsx";
 
 interface StyleSettingsModalProps {
     onClose: () => void;
-
-    // 控制是否显示遮罩层的可选参数，默认为 false
     withBackdrop?: boolean;
 }
 
@@ -17,7 +15,7 @@ const StyleSettingsModal: React.FC<StyleSettingsModalProps> = ({
                                                                    onClose,
                                                                    withBackdrop = false,
                                                                }) => {
-    // 取出颜色相关状态和修改方法（墙面颜色、星空背景色）
+    // 颜色相关的状态和方法
     const {
         starryBackgroundColor,
         setStarryBackgroundColor,
@@ -27,86 +25,110 @@ const StyleSettingsModal: React.FC<StyleSettingsModalProps> = ({
         setGroundColor
     } = useBackgroundColor();
 
-    // 取出背景样式的当前值和修改函数（none、stars、gradient、grid）
-    const {mode, setMode} = useSceneEnvironment();
-
-    // 图标的统一样式定义
-    const iconStyle: React.CSSProperties = {
-        width: 24,
-        height: 24,
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center',
-        fontSize: 18,
-        lineHeight: 1,
-        textAlign: 'center',
-        flexShrink: 0,
-    };
+    // 背景样式相关的状态和方法
+    const {mode, switchMode} = useSceneEnvironment();
 
     return (
         <CenteredModal
-            // 弹出动画配置
             centerModalVariants={getCenterModalVariants()}
-            // 弹框内容宽度与布局
-            className="w-60 flex flex-col gap-4 text-sm"
-            // 是否显示遮罩层
+            className="w-80 p-6 bg-[#1f2937] rounded-xl text-white shadow-2xl"
             showBackdrop={withBackdrop}
         >
-            {/* 关闭按钮，位于右上角 */}
-            <CloseButton onClose={onClose}/>
+            {/* 标题栏 */}
+            <div className="flex justify-between items-center mb-5">
+                <h2 className="text-lg font-bold">场景设置</h2>
+                <CloseButton onClose={onClose}/>
+            </div>
 
-            {/* 设置墙面颜色 */}
-            <label title="墙面颜色" className="flex items-center gap-2 cursor-pointer max-w-max">
-                <span role="img" aria-label="wall" style={iconStyle}>🧱</span>
-                <input
-                    type="color"
-                    value={wallColor}
-                    onChange={(e) => setWallColor(e.target.value)}
-                    className="w-9 h-9 bg-transparent border-none rounded-md shadow-sm p-0 cursor-pointer"
-                    style={{boxShadow: '0 0 5px rgba(0,0,0,0.3)'}}
-                />
-            </label>
-
-            {/* 设置星空背景颜色 */}
-            <label title="星空背景颜色" className="flex items-center gap-2 cursor-pointer max-w-max">
-                <span role="img" aria-label="starry background" style={iconStyle}>🌌</span>
-                <input
-                    type="color"
-                    value={starryBackgroundColor}
-                    onChange={(e) => setStarryBackgroundColor(e.target.value)}
-                    className="w-9 h-9 bg-transparent border-none rounded-md shadow-sm p-0 cursor-pointer"
-                    style={{boxShadow: '0 0 5px rgba(0,0,0,0.3)'}}
-                />
-            </label>
-
-            {/* 设置地面颜色 */}
-            <label title="地面颜色" className="flex items-center gap-2 cursor-pointer max-w-max">
-                <span role="img" aria-label="ground" style={iconStyle}>🪨</span>
-                <input
-                    type="color"
-                    value={groundColor}
-                    onChange={(e) => setGroundColor(e.target.value)}
-                    className="w-9 h-9 bg-transparent border-none rounded-md shadow-sm p-0 cursor-pointer"
-                    style={{boxShadow: '0 0 5px rgba(0,0,0,0.3)'}}
-                />
-            </label>
-
-            {/* 设置背景样式类型 */}
-            <label title="背景样式" className="flex items-center gap-2 cursor-pointer">
-                <span role="img" aria-label="style" style={iconStyle}>🎨</span>
-                <select
-                    value={mode}
-                    onChange={(e) => setMode(e.target.value as EnvironmentMode)}
-                    className="flex-grow px-2 py-1 rounded-lg bg-[#2a2a38] text-white border border-gray-600 cursor-pointer text-sm"
+            {/* 设置项容器 */}
+            <div className="space-y-4">
+                {/* 墙面颜色设置 */}
+                <SettingItem
+                    label="墙面颜色"
+                    emoji="🧱"
+                    description="调整墙壁的颜色"
                 >
-                    <option value="none">无</option>
-                    <option value="default">星空</option>
-                    <option value="hdr">hdr</option>
-                    {/*<option value="grid">网格</option>*/}
-                </select>
-            </label>
+                    <ColorInput value={wallColor} onChange={setWallColor}/>
+                </SettingItem>
+
+                {/* 星空背景色设置 */}
+                <SettingItem
+                    label="默认背景"
+                    emoji="🌌"
+                    description="调整默认背景颜色"
+                >
+                    <ColorInput value={starryBackgroundColor} onChange={setStarryBackgroundColor}/>
+                </SettingItem>
+
+                {/* 地面颜色设置 */}
+                <SettingItem
+                    label="地面颜色"
+                    emoji="🪨"
+                    description="调整地板的颜色"
+                >
+                    <ColorInput value={groundColor} onChange={setGroundColor}/>
+                </SettingItem>
+
+                {/* 背景样式设置 */}
+                <SettingItem
+                    label="背景样式"
+                    emoji="🎨"
+                    description="选择场景背景类型"
+                >
+                    <select
+                        value={mode}
+                        onChange={(e) => {
+                            switchMode(e.target.value as EnvironmentMode);
+                            onClose();
+                        }}
+                        className="w-full px-3 py-2 rounded-lg bg-[#374151] border border-gray-600 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all cursor-pointer text-sm"
+                    >
+                        <option value="none">无背景</option>
+                        <option value="cosmic">星空效果</option>
+                        <option value="hdr">HDR全景</option>
+                        <option value="minimal">简约环境</option>
+                    </select>
+                </SettingItem>
+            </div>
         </CenteredModal>
     );
 };
+
+// 设置项组件 - 封装设置项的统一样式
+const SettingItem: React.FC<{
+    label: string;
+    emoji: string;
+    description?: string;
+    children: React.ReactNode;
+}> = ({label, emoji, description, children}) => (
+    <div className="border border-[#374151] rounded-lg p-3 hover:border-blue-500 hover:bg-[#374151]/50 transition-all">
+        <div className="flex items-center gap-3 mb-2">
+            <div className="w-8 h-8 rounded-full bg-[#374151] flex items-center justify-center text-lg">
+                {emoji}
+            </div>
+            <div>
+                <h3 className="font-medium text-sm">{label}</h3>
+                {description && <p className="text-xs text-gray-400">{description}</p>}
+            </div>
+        </div>
+        {children}
+    </div>
+);
+
+// 颜色选择器组件 - 封装的样式
+const ColorInput: React.FC<{
+    value: string;
+    onChange: (color: string) => void;
+}> = ({value, onChange}) => (
+    <div className="flex items-center gap-2">
+        <input
+            type="color"
+            value={value}
+            onChange={(e) => onChange(e.target.value)}
+            className="w-10 h-10 bg-transparent border border-gray-600 rounded-lg shadow-sm cursor-pointer p-0"
+        />
+        <span className="text-xs text-gray-400">{value.toUpperCase()}</span>
+    </div>
+);
 
 export default StyleSettingsModal;

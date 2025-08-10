@@ -10,6 +10,7 @@ import CameraResetter from '@/components/scene/CameraResetter.tsx';
 import {useBackgroundColor} from '@/contexts/BackgroundColorContext.tsx';
 import SceneSettingsPanel from '@/components/ui/SceneSettingsPanel.tsx';
 import SceneEnvironment from "@/components/scene/SceneEnvironment.tsx";
+import {useSceneEnvironment} from "@/contexts/SceneEnvironmentContext.tsx";
 
 /**
  * 相机初始位置设置
@@ -71,6 +72,9 @@ const SceneContent: React.FC<SceneContentProps> = ({
     // 获取背景色上下文
     const {starryBackgroundColor} = useBackgroundColor();
 
+    // 获取环境背景上下文
+    const {mode} = useSceneEnvironment();
+
     return (
         <div style={{width: '100vw', height: '100vh'}}>
             {/* 登录用户才展示设置面板（上传、登出） */}
@@ -84,7 +88,7 @@ const SceneContent: React.FC<SceneContentProps> = ({
                 style={{backgroundColor: starryBackgroundColor}}
                 gl={{localClippingEnabled: true}}
             >
-                <SceneEnvironment onHDRLoaded={onHDRLoaded}/>
+                <SceneEnvironment mode={mode} onHDRLoaded={onHDRLoaded}/>
                 <ambientLight intensity={0.4}/>
                 <directionalLight position={[5, 10, 5]} intensity={1} castShadow/>
 

@@ -6,7 +6,7 @@ import {useFrame} from '@react-three/fiber';
 const SINGLE_WISH_LENGTH = 3;
 
 // 定义走廊的最大宽度边界，用于限制摄像机在X轴上的移动范围
-const CORRIDOR_WIDTH = 6 - 0.5 / 2 - 0.1;
+const CORRIDOR_WIDTH = 3;
 
 interface CameraControllerProps {
     // 摄像机在Z轴上的移动速度，由外部控制
