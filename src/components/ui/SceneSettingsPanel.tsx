@@ -2,7 +2,7 @@
 import React, {useState} from 'react';
 
 // 引入用于图标按钮的 Icon 组件
-import {FiSettings, FiLogOut, FiUpload} from 'react-icons/fi';
+import {FiSettings, FiLogOut, FiUpload, FiUser} from 'react-icons/fi';
 
 // 引入动画库
 import {AnimatePresence, motion} from 'framer-motion';
@@ -119,39 +119,49 @@ const SceneSettingsPanel: React.FC<SceneSettingsPanelProps> = ({onLogout, onUplo
                                     direction === 'left' ? 'right-14 top-0' :
                                         direction === 'right' ? 'left-14 top-0' :
                                             'top-14 right-0'
-                            } bg-[#1e1e28d9] p-4 rounded-lg w-40 text-white text-sm shadow-[0_8px_20px_rgba(0,0,0,0.6)] flex flex-col gap-2 select-none cursor-default`}
+                            } bg-[#0a0f1a] bg-opacity-90 p-3 rounded-lg w-44 text-white shadow-[0_8px_30px_rgba(0,0,0,0.6)] flex flex-col gap-2 select-none cursor-default border border-[#2a3449] backdrop-blur-md`}
                         >
                             {/* 样式设置 */}
                             <button
                                 onClick={() => handleMenuClick('style')}
-                                className="px-2 py-1 rounded hover:bg-white/10 text-left text-white"
+                                className="px-3 py-2.5 rounded bg-[#1a2235] hover:bg-[#242e49] text-left text-white flex items-center gap-2 transition-colors"
                             >
+                                <div className="w-6 h-6 flex items-center justify-center">
+                                    <FiSettings size={16} />
+                                </div>
                                 样式
                             </button>
 
                             {/* 个人信息设置 */}
                             <button
                                 onClick={() => handleMenuClick('personal')}
-                                className="px-2 py-1 rounded hover:bg-white/10 text-left text-white"
+                                className="px-3 py-2.5 rounded bg-[#1a2235] hover:bg-[#242e49] text-left text-white flex items-center gap-2 transition-colors"
                             >
+                                <div className="w-6 h-6 flex items-center justify-center">
+                                    <FiUser size={16} />
+                                </div>
                                 个人信息
                             </button>
 
                             {/* 上传图片按钮 */}
                             <button
                                 onClick={() => handleMenuClick('upload')}
-                                className="px-2 py-1 rounded hover:bg-blue-500/20 text-left text-white flex items-center gap-2"
+                                className="px-3 py-2.5 rounded bg-[#1a2235] hover:bg-[#242e49] text-left text-white flex items-center gap-2 transition-colors"
                             >
-                                <FiUpload size={16} color="#3b82f6"/>
+                                <div className="w-6 h-6 flex items-center justify-center">
+                                    <FiUpload size={16} color="#3b82f6" />
+                                </div>
                                 上传
                             </button>
 
                             {/* 退出登录按钮 */}
                             <button
                                 onClick={onLogout}
-                                className="px-2 py-1 rounded hover:bg-red-500/20 text-left text-white flex items-center gap-2"
+                                className="px-3 py-2.5 rounded bg-[#1a2235] hover:bg-[#242e49] text-left text-white flex items-center gap-2 transition-colors"
                             >
-                                <FiLogOut size={16} color="#e53e3e"/>
+                                <div className="w-6 h-6 flex items-center justify-center">
+                                    <FiLogOut size={16} color="#e53e3e" />
+                                </div>
                                 退出
                             </button>
                         </motion.div>
